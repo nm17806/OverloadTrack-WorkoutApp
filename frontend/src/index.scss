@@ -1,0 +1,122 @@
+.app {
+  .loginContainer {
+    background-color: lightblue;
+
+    .loginColumn {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .loginForm {
+        width: 100%;
+        border-style: solid;
+        border-width: 1px;
+        padding: 40px;
+        border-radius: 10px;
+        background-color: lightgray;
+      }
+    }
+  }
+  .home {
+    .row1 {
+      height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .row2 {
+      height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .exerciseCard {
+    margin: 0 10px 20px 10px;
+
+    .cardBody {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .cardTitle {
+        font-size: 16px;
+      }
+
+      .cardText {
+        align-self: flex-start;
+      }
+    }
+  }
+  .fetchExercises {
+    .exercisesRow {
+      display: flex;
+      justify-content: center;
+    }
+  }
+  .footer-basic {
+    padding: 40px 0;
+    background-color: #ffffff;
+    color: #4b4c4d;
+    .copyright {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 0;
+    }
+    .social {
+      text-align: center;
+      padding-bottom: 25px;
+      a {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        display: inline-block;
+        text-align: center;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        margin: 0 8px;
+        color: inherit;
+        opacity: 0.75;
+        .icon {
+          font-size: 30px;
+          padding-bottom: 5px;
+        }
+      }
+      a:hover {
+        opacity: 0.9;
+      }
+    }
+    ul {
+      padding: 0;
+      list-style: none;
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 0;
+      a {
+        color: inherit;
+        text-decoration: none;
+        opacity: 0.8;
+      }
+      a:hover {
+        opacity: 1;
+      }
+    }
+    li {
+      padding: 0 10px;
+    }
+  }
+  .workoutsRow {
+    padding-top: 20px;
+  }
+  .addExerciseForm {
+    .exerciseFormTitle {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+  }
+}

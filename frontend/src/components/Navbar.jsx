@@ -12,6 +12,7 @@ export default function MyNav() {
           <Nav>
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/exercises">Exercises</Nav.Link>
+            <Nav.Link href="/workouts">Workouts</Nav.Link>
             <Nav.Link href="/sessions">Start a Workout</Nav.Link>
           </Nav>
         </Navbar.Collapse>

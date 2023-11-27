@@ -8,9 +8,12 @@ export default function AddExerciseForm() {
   const [exercise, setExercise] = useState("");
   const [bodyPart, setBodyPart] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     axios
       .post("api/exercises", {
         exercise_name: exercise,
@@ -24,6 +27,9 @@ export default function AddExerciseForm() {
       .catch(function (err) {
         setError(err);
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -47,9 +53,15 @@ export default function AddExerciseForm() {
             placeholder="eg. Chest"
           />
         </FloatingLabel>
-        <Button className="exerciseFormBtn" variant="primary" type="submit">
-          Submit
-        </Button>
+        {isLoading ? (
+          <Button className="exerciseFormBtn" variant="primary" disabled>
+            Submitting...
+          </Button>
+        ) : (
+          <Button className="exerciseFormBtn" variant="primary" type="submit">
+            Submit
+          </Button>
+        )}
         <br />
         {error && (
           <div className="error">

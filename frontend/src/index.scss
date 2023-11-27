@@ -35,11 +35,15 @@
   }
   .exerciseCard {
     margin: 0 10px 20px 10px;
+    position: relative;
+    border-color: blue;
+    background-color: rgb(219, 204, 204);
 
     .cardBody {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: space-evenly;
+      padding-left: 0px;
 
       .cardTitle {
         font-size: 16px;
@@ -47,6 +51,14 @@
 
       .cardText {
         align-self: flex-start;
+        display: inline;
+      }
+      .delete-icon {
+        position: absolute;
+        bottom: 35%;
+        right: 5%;
+        font-size: x-large;
+        cursor: pointer;
       }
     }
   }

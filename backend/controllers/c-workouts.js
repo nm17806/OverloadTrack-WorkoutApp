@@ -10,7 +10,16 @@ const pool = mysql.createPool({
 
 const getWorkouts = async (req, res) => {
   try {
-    const [result] = await pool.query("SELECT * FROM Workout_Template WHERE is_active = true;");
+    const [result] = await pool.query(`
+    SELECT
+    WT.template_name AS Workout_Template_Name,
+    E.exercise_name AS Exercise_Name,
+    E.body_part AS BodyPart
+    FROM Workout_Template_Exercise AS WTE
+    JOIN Workout_Template AS WT ON WTE.template_id = WT.template_id
+    JOIN Exercise AS E ON WTE.exercise_id = E.exercise_id
+    WHERE WT.is_active = true;
+      `);
     res.status(200).send(result);
   } catch (err) {
     res.status(500).send({ error: err.message });

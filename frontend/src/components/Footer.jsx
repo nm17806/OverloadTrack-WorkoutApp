@@ -1,4 +1,5 @@
-import { Linkedin, Github } from "react-bootstrap-icons";
+import { BsLinkedin } from "react-icons/bs";
+import { FaGithub } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -6,10 +7,10 @@ export default function Footer() {
       <footer>
         <div className="social">
           <a href="#">
-            <Linkedin className="icon" />
+            <BsLinkedin className="icon" />
           </a>
           <a href="#">
-            <Github className="icon" />
+            <FaGithub className="icon" />
           </a>
         </div>
         <ul className="list-inline">

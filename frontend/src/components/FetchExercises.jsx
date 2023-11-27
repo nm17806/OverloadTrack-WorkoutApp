@@ -7,20 +7,31 @@ export default function FetchExercises() {
   const [exercises, setExercises] = useState([]);
 
   useEffect(() => {
-    const fetchAllExercises = async () => {
-      try {
-        const res = await axios.get("api/exercises");
+    // const fetchAllExercises = async () => {
+    //   try {
+    //     const res = await axios.get("api/exercises");
+    //     setExercises(res.data);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
+    // fetchAllExercises();
+    axios
+      .get("api/exercises")
+      .then(function (res) {
+        // handle success
         setExercises(res.data);
-      } catch (err) {
+        console.log(res);
+      })
+      .catch(function (err) {
+        // handle error
         console.log(err);
-      }
-    };
-    fetchAllExercises();
+      });
   }, []);
 
   return (
     <div className="fetchExercises">
-      <Row xs={2} sm={3} md={4} className="exercisesRow">
+      <Row xs={2} sm={3} lg={4} className="exercisesRow">
         {exercises.map((exercise) => (
           <ExerciseCards key={exercise.exercise_id} exercise={exercise} />
         ))}

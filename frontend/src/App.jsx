@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Workouts from "./pages/Workouts";
 
 const Layout = () => {
   return (
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "/exercises",
         element: <Exercises />,
+      },
+      {
+        path: "/workouts",
+        element: <Workouts />,
       },
       {
         path: "/sessions",

@@ -12,6 +12,6 @@ router.get("/:exercise_id", getExercise);
 router.post("/", createExercise);
 
 // Delete One
-router.delete("/:exercise_id", disableExercise);
+router.patch("/:exercise_id", disableExercise);
 
 module.exports = router;

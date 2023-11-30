@@ -1,8 +1,8 @@
 import Container from "react-bootstrap/Container";
-import FetchExercises from "../components/FetchExercises";
+import FetchExercises from "../components/ExercisesPage/FetchExercises";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import AddExerciseForm from "../components/AddExerciseForm";
+import AddExerciseForm from "../components/ExercisesPage/AddExerciseForm";
 
 export default function Workouts() {
   return (

@@ -8,10 +8,13 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
 });
 
-const getWorkouts = async (req, res) => {
+const getWorkoutsandExercises = async (req, res) => {
+  // This shows what exercises have been added to which workout templates
   try {
     const [result] = await pool.query(`
     SELECT
+    WTE.id,
+    WT.template_id AS Template_id,
     WT.template_name AS Workout_Template_Name,
     E.exercise_name AS Exercise_Name,
     E.body_part AS BodyPart
@@ -26,21 +29,13 @@ const getWorkouts = async (req, res) => {
   }
 };
 
-const getWorkout = async (req, res) => {
+const getWorkouts = async (req, res) => {
   const id = req.params.template_id;
   try {
     const [result] = await pool.query(
-      // This shows what exercises have been added to which workout templates
       `
-        SELECT
-      WT.template_name AS Workout_Template_Name,
-      E.exercise_name AS Exercise_Name,
-      E.body_part AS BodyPart
-        FROM Workout_Template_Exercise AS WTE
-        JOIN Workout_Template AS WT ON WTE.template_id = WT.template_id
-        JOIN Exercise AS E ON WTE.exercise_id = E.exercise_id
-        WHERE WTE.template_id = ?`,
-      [id]
+      SELECT * FROM workout_template WHERE is_active = true
+      `
     );
     res.status(200).send(result);
   } catch (err) {
@@ -73,4 +68,4 @@ const addWorkout = async (req, res) => {
   }
 };
 
-module.exports = { getWorkouts, getWorkout, disableWorkout, addWorkout };
+module.exports = { getWorkoutsandExercises, getWorkouts, disableWorkout, addWorkout };

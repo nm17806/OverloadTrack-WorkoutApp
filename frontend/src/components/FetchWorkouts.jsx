@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import WorkoutsLayout from "./WorkoutsLayout";
 
 export default function FetchWorkouts() {
   const [workouts, setWorkouts] = useState([]);
 
-  const organizeData = (data) => {
+  const organizeWorkouts = (data) => {
+    // Could look at using .groupBy
     const result = [];
 
     data.forEach((item) => {
@@ -24,37 +26,34 @@ export default function FetchWorkouts() {
         result[templateIndex].exercises.push({ Exercise_Name, BodyPart });
       }
     });
-
-    return result;
+    setWorkouts(result);
   };
 
-  const WorkoutList = ({ data }) => {
-    const organizedData = organizeData(data);
-    return (
-      <div>
-        {organizedData.map((template) => (
-          <div key={template.name}>
-            <h2>{template.name}</h2>
-            <ul>
-              {template.exercises.map(({ Exercise_Name, BodyPart }, index) => (
-                <li key={index}>
-                  {Exercise_Name} - {BodyPart}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    );
-  };
+  // const WorkoutList = () => {
+  //   const organizedData = organizeWorkouts();
+  //   return (
+  //     <div>
+  //       {organizedData.map((template) => (
+  //         <div key={template.name}>
+  //           <h2>{template.name}</h2>
+
+  //           {template.exercises.map(({ Exercise_Name, BodyPart }, index) => (
+  //             <div key={index}>
+  //               {Exercise_Name} - {BodyPart}
+  //             </div>
+  //           ))}
+  //         </div>
+  //       ))}
+  //     </div>
+  //   );
+  // };
 
   useEffect(() => {
     axios
       .get("api/workouts")
       .then(function (res) {
         // handle success
-        setWorkouts(res.data);
-        console.log(res);
+        organizeWorkouts(res.data);
       })
       .catch(function (err) {
         // handle error
@@ -64,7 +63,10 @@ export default function FetchWorkouts() {
 
   return (
     <div>
-      <WorkoutList data={workouts} />
+      {/* <WorkoutList data={workouts} /> */}
+      {workouts.map((template) => (
+        <WorkoutsLayout key={template.name} template={template} exercises={template.exercises} />
+      ))}
     </div>
   );
 }

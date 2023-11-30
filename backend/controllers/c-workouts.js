@@ -50,13 +50,27 @@ const getWorkout = async (req, res) => {
 
 const disableWorkout = async (req, res) => {
   const id = req.params.template_id;
-  const [result] = await pool.query(`UPDATE Workout_Template SET is_active = false WHERE template_id = ?`, [id]);
-
   try {
+    const [result] = await pool.query(`UPDATE Workout_Template SET is_active = false WHERE template_id = ?`, [id]);
     res.status(200).send(result);
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
 };
 
-module.exports = { getWorkouts, getWorkout, disableWorkout };
+const addWorkout = async (req, res) => {
+  const { template_name } = req.body;
+  try {
+    const [result] = await pool.query(
+      `
+  INSERT INTO workout_template (template_name)
+  VALUES (?);`,
+      [template_name]
+    );
+    res.status(201).send({ id: result.insertId, template_name });
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+};
+
+module.exports = { getWorkouts, getWorkout, disableWorkout, addWorkout };

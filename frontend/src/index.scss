@@ -136,4 +136,31 @@
     color: red;
     text-align: center;
   }
+
+  .workoutAccordian {
+    margin-bottom: 20px;
+    .workoutAccordianItem {
+      // width: 100%;
+      // padding: 10px 0 10px 0;
+
+      .workoutAccordianBody {
+        border-top-style: solid;
+        border-width: 1px;
+        border-color: rgb(213, 211, 211);
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+    .accordion-button {
+      background-color: white !important;
+    }
+
+    .accordion-button:focus {
+      box-shadow: none;
+    }
+
+    .accordion-button:not(.collapsed) {
+      color: #212529;
+    }
+  }
 }

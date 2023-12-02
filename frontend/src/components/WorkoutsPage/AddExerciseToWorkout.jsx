@@ -1,9 +1,7 @@
 import Form from "react-bootstrap/Form";
-
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useState, useEffect } from "react";
-import React from "react";
 import axios from "axios";
 
 export default function AddExerciseToWorkout() {
@@ -12,39 +10,12 @@ export default function AddExerciseToWorkout() {
   const [exercises, setExercises] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedWorkoutId, setselectedWorkoutId] = useState([]);
-
-  // forwardRef again here!
-  // Dropdown needs access to the DOM of the Menu to measure it
-  const CustomMenu = React.forwardRef(function CustomMenu(
-    { children, style, className, "aria-labelledby": labeledBy },
-    ref
-  ) {
-    const [value, setValue] = useState("");
-
-    return (
-      <div ref={ref} style={style} className={className} aria-labelledby={labeledBy}>
-        <Form.Control
-          autoFocus
-          className="mx-3 my-2 w-75"
-          placeholder="Type to filter..."
-          onChange={(e) => setValue(e.target.value)}
-          value={value}
-        />
-        <ul className="list-unstyled">
-          {React.Children.toArray(children).filter(
-            (child) => !value || child.props.children.toLowerCase().startsWith(value)
-          )}
-        </ul>
-      </div>
-    );
-  });
+  const [error, setError] = useState("");
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log(selectedItems[0]);
-    console.log(selectedWorkoutId);
 
-    if (selectedItems && selectedItems.length > 0) {
+    if (selectedItems && selectedItems.length > 0 && selectedWorkoutId) {
       // Use map to create an array of promises
       const postRequests = selectedItems.map((item) =>
         axios.post("api/workouts/add-exercise", {
@@ -56,13 +27,14 @@ export default function AddExerciseToWorkout() {
       // Use Promise.all to wait for all promises to resolve
       Promise.all(postRequests)
         .then(function (responses) {
-          // handle success
           console.log(responses);
         })
         .catch(function (error) {
-          // handle error
+          setError(error);
           console.log(error);
         });
+    } else {
+      setError(true);
     }
   };
 
@@ -73,7 +45,6 @@ export default function AddExerciseToWorkout() {
 
   const handleChange = (e) => {
     // Update the selectedItems array based on the button that was clicked
-    // value = Number(value)
     let { value } = e.currentTarget;
     value = Number(value);
     if (selectedItems.includes(value)) {
@@ -99,7 +70,6 @@ export default function AddExerciseToWorkout() {
       .then(function (res) {
         // handle success
         setExercises(res.data);
-        console.log(res.data);
       })
       .catch(function (err) {
         // handle error
@@ -113,7 +83,7 @@ export default function AddExerciseToWorkout() {
       <Form onSubmit={handleFormSubmit}>
         <Dropdown>
           <Dropdown.Toggle variant="outline-secondary w-100 p-3">{selectedWorkout}</Dropdown.Toggle>
-          <Dropdown.Menu className="w-100" as={CustomMenu}>
+          <Dropdown.Menu className="w-100">
             {workoutName &&
               workoutName.map((workout) => (
                 <Dropdown.Item
@@ -129,6 +99,11 @@ export default function AddExerciseToWorkout() {
         <Button className="exerciseFormBtn" variant="primary" type="submit">
           Submit
         </Button>
+        {error && (
+          <div className="error">
+            Something Went Wrong! <br></br> Please try again later.
+          </div>
+        )}
       </Form>
 
       <div className="exerciseButtonsDiv" value={selectedItems} onChange={handleChange}>
@@ -137,7 +112,6 @@ export default function AddExerciseToWorkout() {
             <Button
               type="checkbox"
               key={exercise.exercise_id}
-              // variant="outline-primary"
               className="exerciseButtons"
               variant="outline-primary"
               value={exercise.exercise_id}

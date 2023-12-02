@@ -11,23 +11,27 @@ export default function AddWorkoutForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    axios
-      .post("api/workouts", {
-        template_name: workout,
-      })
-      .then(function (res) {
-        setWorkout("");
-        console.log(res);
-      })
-      .catch(function (err) {
-        setError(err);
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    if (workout) {
+      setIsLoading(true);
+      axios
+        .post("api/workouts", {
+          template_name: workout,
+        })
+        .then(function (res) {
+          setWorkout("");
+          console.log(res);
+        })
+        .catch(function (err) {
+          setError(err);
+          console.log(err);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setError(true);
+    }
   };
 
   return (

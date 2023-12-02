@@ -68,4 +68,20 @@ const addWorkout = async (req, res) => {
   }
 };
 
-module.exports = { getWorkoutsandExercises, getWorkouts, disableWorkout, addWorkout };
+const addExercisesToWorkout = async (req, res) => {
+  const { template_id, exercise_id } = req.body;
+  try {
+    const [result] = await pool.query(
+      `
+      INSERT INTO Workout_Template_Exercise (template_id, exercise_id)
+      VALUES (?,?);
+      `,
+      [template_id, exercise_id]
+    );
+    res.status(201).send({ mssg: "Exercise added to workout template successfully." });
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+};
+
+module.exports = { getWorkoutsandExercises, getWorkouts, disableWorkout, addWorkout, addExercisesToWorkout };

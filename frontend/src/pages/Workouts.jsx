@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import FetchWorkouts from "../components/WorkoutsPage/FetchWorkouts";
 import AddWorkoutForm from "../components/WorkoutsPage/AddWorkoutForm";
+import AddExerciseToWorkout from "../components/WorkoutsPage/AddExerciseToWorkout";
 
 export default function Workouts() {
   return (
@@ -13,7 +14,8 @@ export default function Workouts() {
         </Col>
         <Col xs={12} md={4}>
           <AddWorkoutForm />
-          <div>Add exercises to a workout</div>
+          <br />
+          <AddExerciseToWorkout />
         </Col>
       </Row>
     </Container>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dropdown Menu</title>
+    <style>
+      /* Basic styling for demonstration purposes */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        padding: 10px;
+        z-index: 1;
+      }
+
+      .dropdown-content a {
+        display: block;
+        padding: 8px;
+        text-decoration: none;
+        color: #333;
+      }
+
+      .dropdown-content a:hover {
+        background-color: #f4f4f4;
+      }
+
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+
+      /* Style for the selected item in the header */
+      .dropdown-header {
+        padding: 10px;
+        background-color: #3498db;
+        color: #fff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dropdown">
+      <div class="dropdown-header" onclick="toggleDropdown()">Select an Item</div>
+      <div class="dropdown-content">
+        <a href="#" onclick="selectItem('Item 1')">Item 1</a>
+        <a href="#" onclick="selectItem('Item 2')">Item 2</a>
+        <a href="#" onclick="selectItem('Item 3')">Item 3</a>
+      </div>
+    </div>
+
+    <script>
+      let selectedItem = "";
+
+      function toggleDropdown() {
+        const dropdownContent = document.querySelector(".dropdown-content");
+        dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+      }
+
+      function selectItem(item) {
+        selectedItem = item;
+        updateDropdownHeader();
+        toggleDropdown();
+      }
+
+      function updateDropdownHeader() {
+        const dropdownHeader = document.querySelector(".dropdown-header");
+        dropdownHeader.textContent = selectedItem;
+      }
+    </script>
+  </body>
+</html>

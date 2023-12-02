@@ -13,7 +13,7 @@ export default function ExerciseCards({ exercise }) {
   const handleDelete = () => {
     setShowModal(false);
     axios
-      .delete(`api/exercises/${exercise.exercise_id}`)
+      .patch(`api/exercises/${exercise.exercise_id}`)
       .then(function (res) {
         // handle success
         console.log(res);
@@ -38,7 +38,6 @@ export default function ExerciseCards({ exercise }) {
             </span>
           </Col>
         </Row>
-
         {/* Delete Confirmation Modal */}
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header closeButton>

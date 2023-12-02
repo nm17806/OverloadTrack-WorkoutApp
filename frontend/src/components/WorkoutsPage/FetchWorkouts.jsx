@@ -12,7 +12,6 @@ export default function FetchWorkouts() {
       .then(function (res) {
         // handle success
         setWorkouts(res.data);
-        console.log(res.data);
       })
       .catch(function (err) {
         // handle error
@@ -26,7 +25,6 @@ export default function FetchWorkouts() {
       .then(function (res) {
         // handle success
         setWorkoutName(res.data);
-        console.log(res.data);
       })
       .catch(function (err) {
         // handle error
@@ -48,13 +46,18 @@ export default function FetchWorkouts() {
               <Accordion.Item className="workoutAccordianItem" eventKey="0">
                 <Accordion.Header>{workout.template_name}</Accordion.Header>
 
-                {checkForExercises &&
+                {checkForExercises ? (
                   filteredExercises.map((exercise) => (
                     <div className="workoutAccordianBody" key={exercise.id}>
                       <Accordion.Body>{exercise.Exercise_Name}</Accordion.Body>
                       <Accordion.Body>{exercise.BodyPart}</Accordion.Body>
                     </div>
-                  ))}
+                  ))
+                ) : (
+                  <div className="workoutAccordianBody">
+                    <Accordion.Body>There are no exercises assigned yet</Accordion.Body>
+                  </div>
+                )}
               </Accordion.Item>
             </Accordion>
           </div>

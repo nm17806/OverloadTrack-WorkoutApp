@@ -12,6 +12,7 @@ const pool = mysql.createPool({
 const getSessions = async (req, res) => {
   try {
     const [result] = await pool.query(`SELECT
+    uwr.record_id,
     wt.template_name,
     uwr.workout_date
     FROM User_Workout_Record as uwr
@@ -27,7 +28,8 @@ const getSession = async (req, res) => {
   const id = req.params.record_id;
   try {
     const [result] = await pool.query(
-      `SELECT  
+      `SELECT
+        uwr.record_id,  
         uws.set_id,
         wtr.template_name,
         uwr.workout_date,

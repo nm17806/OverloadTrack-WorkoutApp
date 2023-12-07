@@ -14,14 +14,15 @@ const getWorkoutsandExercises = async (req, res) => {
     const [result] = await pool.query(`
     SELECT
     WTE.id,
-    WT.template_id AS Template_id,
-    WT.template_name AS Workout_Template_Name,
-    E.exercise_name AS Exercise_Name,
-    E.body_part AS BodyPart
+    WT.template_id AS template_id,
+    E.exercise_id AS exercise_id,
+    WT.template_name AS workout_template_name,
+    E.exercise_name AS exercise_name,
+    E.body_part AS body_part
     FROM Workout_Template_Exercise AS WTE
     JOIN Workout_Template AS WT ON WTE.template_id = WT.template_id
     JOIN Exercise AS E ON WTE.exercise_id = E.exercise_id
-    WHERE WT.is_active = true;
+    WHERE WTE.is_active = true;
       `);
     res.status(200).send(result);
   } catch (err) {
@@ -84,4 +85,29 @@ const addExercisesToWorkout = async (req, res) => {
   }
 };
 
-module.exports = { getWorkoutsandExercises, getWorkouts, disableWorkout, addWorkout, addExercisesToWorkout };
+const removeExerciseFromWorkout = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const [result] = await pool.query(
+      `
+      UPDATE workout_template_exercise
+      SET is_active = false
+      WHERE id = ?;
+      `,
+      [id]
+    );
+    res.status(200).send({ mssg: "Exercise removed from workout successfully." });
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+};
+
+module.exports = {
+  getWorkoutsandExercises,
+  getWorkouts,
+  disableWorkout,
+  addWorkout,
+  addExercisesToWorkout,
+  removeExerciseFromWorkout,
+};

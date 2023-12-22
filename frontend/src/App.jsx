@@ -10,6 +10,7 @@ import Footer from "./components/Shared/Footer";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Workouts from "./pages/Workouts";
+import RecordSession from "./pages/RecordSession";
 
 const Layout = () => {
   return (
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: "/sessions",
         element: <Sessions />,
+      },
+      {
+        path: "/record-session",
+        element: <RecordSession />,
       },
     ],
   },

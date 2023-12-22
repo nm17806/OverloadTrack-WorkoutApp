@@ -13,7 +13,8 @@ export default function MyNav() {
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/exercises">Exercises</Nav.Link>
             <Nav.Link href="/workouts">Workout Routines</Nav.Link>
-            <Nav.Link href="/sessions">Record a Workout</Nav.Link>
+            <Nav.Link href="/sessions">See My Sessions</Nav.Link>
+            <Nav.Link href="/record-session">Record a Workout</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">

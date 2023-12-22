@@ -31,12 +31,36 @@ const getWorkoutsandExercises = async (req, res) => {
 };
 
 const getWorkouts = async (req, res) => {
-  const id = req.params.template_id;
   try {
     const [result] = await pool.query(
       `
       SELECT * FROM workout_template WHERE is_active = true
       `
+    );
+    res.status(200).send(result);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+};
+
+const getWorkout = async (req, res) => {
+  const id = req.params.template_id;
+  try {
+    const [result] = await pool.query(
+      `
+      SELECT
+      WTE.id,
+      WT.template_id AS template_id,
+      E.exercise_id AS exercise_id,
+      WT.template_name AS workout_template_name,
+      E.exercise_name AS exercise_name,
+      E.body_part AS body_part
+      FROM Workout_Template_Exercise AS WTE
+    JOIN Workout_Template AS WT ON WTE.template_id = WT.template_id
+    JOIN Exercise AS E ON WTE.exercise_id = E.exercise_id
+    WHERE WTE.is_active = true AND WT.template_id = ?;
+      `,
+      [id]
     );
     res.status(200).send(result);
   } catch (err) {
@@ -110,4 +134,5 @@ module.exports = {
   addWorkout,
   addExercisesToWorkout,
   removeExerciseFromWorkout,
+  getWorkout,
 };

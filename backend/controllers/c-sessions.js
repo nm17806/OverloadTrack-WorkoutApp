@@ -59,10 +59,11 @@ const getSession = async (req, res) => {
 };
 
 const postSessionRecord = async (req, res) => {
-  const id = req.params.template_id;
+  const { template_id, workout_date } = req.body;
   try {
-    const [result] = await pool.query(`INSERT INTO User_Workout_Record (template_id, workout_date) VALUES (?, now())`, [
-      id,
+    const [result] = await pool.query(`INSERT INTO User_Workout_Record (template_id, workout_date) VALUES (?, ?)`, [
+      template_id,
+      workout_date,
     ]);
     res.status(200).send({ id: result.insertId });
   } catch (err) {

@@ -96,6 +96,7 @@ export default function FetchWorkouts() {
                       setShowWorkoutModal(true);
                     }}
                   >
+                    &nbsp;
                     <RiDeleteBinLine />
                   </span>
                 </Accordion.Header>

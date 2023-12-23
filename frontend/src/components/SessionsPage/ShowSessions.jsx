@@ -42,6 +42,8 @@ export default function ShowSessions() {
         <div key={recordId}>
           <h2 onClick={() => toggleRecord(recordId)} style={{ cursor: "pointer" }}>
             Date: {ConvertDate(sessions[0].workout_date)}
+            <span> </span>
+            {sessions[0].template_name}
           </h2>
           {expandedRecords[recordId] && (
             <table style={{ width: "100%", border: "1px solid black", borderCollapse: "collapse" }}>

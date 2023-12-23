@@ -18,6 +18,7 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
   const [recordId, setRecordId] = useState(0);
   const [submittedSets, setSubmittedSets] = useState([]);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [dateTime, setDateTime] = useState("");
 
   const onSelection = (item, id) => {
     setSelectedWorkout(item);
@@ -27,6 +28,7 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    const sqlDateTime = dateTime.replace("T", " ") + ":00";
     // Fetch workout exercises when a workout is selected
     axios
       .get(`api/workouts/${selectedWorkoutId}`)
@@ -42,7 +44,10 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
       });
 
     axios
-      .post(`api/sessions/${selectedWorkoutId}`)
+      .post(`api/sessions/record`, {
+        workout_date: sqlDateTime,
+        template_id: selectedWorkoutId,
+      })
       .then(function (res) {
         // handle success
         setRecordId(res.data.id);
@@ -105,12 +110,16 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
     console.log(openAccordion);
   };
 
+  const now = new Date();
+  const localDateTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+    now.getDate()
+  ).padStart(2, "0")}T${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
   return (
     <Container>
       {isFormSubmitted ? (
         <div>
           <h2>{selectedWorkout}</h2>
-          {/* Additional information or UI for the selected workout can be added here */}
         </div>
       ) : (
         <Form className="text-center" onSubmit={handleFormSubmit}>
@@ -130,6 +139,15 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
                 ))}
             </Dropdown.Menu>
           </Dropdown>
+          <br />
+
+          <Form.Control
+            onChange={(e) => setDateTime(e.target.value)}
+            className="p-3 w-75 d-block mx-auto"
+            type="datetime-local"
+            defaultValue={localDateTime}
+          />
+
           <br />
           <Button className="w-50" variant="primary" type="submit">
             Submit

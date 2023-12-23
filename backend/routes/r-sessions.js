@@ -7,7 +7,7 @@ router.get("/", getSessions);
 
 router.get("/:record_id", getSession);
 
-router.post("/:template_id", postSessionRecord);
+router.post("/record", postSessionRecord);
 
 router.post("/", postSessionSets);
 

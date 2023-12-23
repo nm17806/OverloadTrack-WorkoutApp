@@ -17,6 +17,7 @@ const getSessions = async (req, res) => {
     wtr.template_name,
     uwr.workout_date,
     e.exercise_name,
+    e.exercise_id,
     e.body_part,
     uws.weight,
     uws.reps

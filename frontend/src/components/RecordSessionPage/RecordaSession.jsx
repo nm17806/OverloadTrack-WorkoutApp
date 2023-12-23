@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Accordion from "react-bootstrap/Accordion";
 
-export default function RecordaSession() {
+export default function RecordaSession({ openAccordion, setOpenAccordion }) {
   const [workoutName, setWorkoutName] = useState([]);
   const [selectedWorkout, setSelectedWorkout] = useState("Select a Workout");
   const [selectedWorkoutId, setselectedWorkoutId] = useState([]);
@@ -15,9 +15,7 @@ export default function RecordaSession() {
     weight: "",
     reps: "",
   });
-  const [recordId, setRecordId] = useState(0); // This is the record_id from the sessions table
-
-  // Update submittedSets state to store an array of sets for each exercise
+  const [recordId, setRecordId] = useState(0);
   const [submittedSets, setSubmittedSets] = useState([]);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
@@ -57,10 +55,6 @@ export default function RecordaSession() {
 
   const handleSetFormSubmit = (e, exerciseId) => {
     e.preventDefault();
-
-    // Perform the logic to submit the form data (weight and reps) to the server
-    // I need to save this information in a format that matches the backend database.
-    // I should only post once I have everything, and post many in one go.
 
     setSubmittedSets((prevSets) => [
       ...prevSets,
@@ -106,6 +100,11 @@ export default function RecordaSession() {
       });
   }, []);
 
+  const handleAccordionClick = (eventKey) => {
+    setOpenAccordion(openAccordion === eventKey ? null : eventKey);
+    console.log(openAccordion);
+  };
+
   return (
     <Container>
       {isFormSubmitted ? (
@@ -140,11 +139,11 @@ export default function RecordaSession() {
       <br />
       {/* accordions for each exercise in the workout */}
       {workoutExercises &&
-        workoutExercises.map((exercise) => (
+        workoutExercises.map((exercise, index) => (
           <div key={exercise.id}>
-            <Accordion defaultActiveKey="0">
-              <Accordion.Item eventKey={exercise.id}>
-                <Accordion.Header>
+            <Accordion activeKey={openAccordion}>
+              <Accordion.Item eventKey={exercise.exercise_id.toString()} key={index}>
+                <Accordion.Header onClick={() => handleAccordionClick(exercise.exercise_id.toString())}>
                   {exercise.exercise_name} ({exercise.body_part})
                 </Accordion.Header>
                 <Accordion.Body>

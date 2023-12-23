@@ -121,7 +121,7 @@ export default function AddExerciseToWorkout() {
                 color: selectedItems.includes(exercise.exercise_id) ? "white" : "blue",
               }}
             >
-              {exercise.exercise_name + " " + exercise.body_part}
+              {exercise.exercise_name + " (" + exercise.body_part + ")"}
             </Button>
           ))}
       </div>

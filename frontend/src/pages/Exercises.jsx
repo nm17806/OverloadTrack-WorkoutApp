@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import AddExerciseForm from "../components/ExercisesPage/AddExerciseForm";
 
-export default function Exrecises() {
+export default function Exercises() {
   return (
     <Container>
       {/* Add a search bar here to search for workouts */}

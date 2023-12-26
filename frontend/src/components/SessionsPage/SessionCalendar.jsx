@@ -1,13 +1,13 @@
 import clsx from "clsx";
-import { eachDayOfInterval, endOfMonth, format, getDay, isToday, startOfMonth } from "date-fns";
-import { useMemo } from "react";
+import { eachDayOfInterval, endOfMonth, format, getDay, isToday, startOfMonth, subMonths, addMonths } from "date-fns";
+import { useMemo, useState } from "react";
 import "./EventCalendar.css";
 import ConvertDate from "../Shared/ConvertDate";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const SessionCalendar = ({ sessions }) => {
-  const currentDate = new Date();
+  const [currentDate, setCurrentDate] = useState(new Date());
   const firstDayOfMonth = startOfMonth(currentDate);
   const lastDayOfMonth = endOfMonth(currentDate);
 
@@ -20,26 +20,38 @@ const SessionCalendar = ({ sessions }) => {
 
   const dateSessionMap = useMemo(() => {
     if (sessions) {
+      console.log(sessions);
       const map = {};
       // eslint-disable-next-line no-unused-vars
       Object.entries(sessions).forEach(([recordId, sessions]) => {
         const date = ConvertDate(sessions[0].workout_date);
-        map[date] = sessions[0].template_name;
+        map[date] = { template_name: sessions[0].template_name, record_id: recordId };
       });
+      console.log(map);
       return map;
     } else {
       return {};
     }
   }, [sessions]);
 
-  const handleSessionSelection = (e) => {
-    e.preventDefault();
+  const handleSessionSelection = (recordId) => {
+    console.log(recordId);
+  };
+
+  const goToPreviousMonth = () => {
+    setCurrentDate(subMonths(currentDate, 1));
+  };
+
+  const goToNextMonth = () => {
+    setCurrentDate(addMonths(currentDate, 1));
   };
 
   return (
     <div className="container">
       <div className="mb-4">
         <h2 className="text-center">{format(currentDate, "MMMM yyyy")}</h2>
+        <button onClick={goToPreviousMonth}>&lt;</button>
+        <button onClick={goToNextMonth}>&gt;</button>
       </div>
       <div className="grid">
         {WEEKDAYS.map((day) => {
@@ -66,14 +78,15 @@ const SessionCalendar = ({ sessions }) => {
               {format(day, "d")}
               {templateName && (
                 <div
-                  onClick={handleSessionSelection}
+                  onClick={() => handleSessionSelection(templateName.record_id)}
                   style={{ cursor: "pointer" }}
                   className="border rounded-md bg-secondary text-light"
                 >
-                  {templateName}
+                  {templateName.template_name}
                 </div>
               )}
-              {!templateName && <div>{templateName || "\u00A0"}</div>}
+              {!templateName ||
+                (!templateName.template_name && <div>{templateName ? templateName.template_name : "\u00A0"}</div>)}
             </div>
           );
         })}

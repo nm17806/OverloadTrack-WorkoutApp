@@ -19,14 +19,22 @@ const SessionCalendar = ({ sessions }) => {
   const startingDayIndex = getDay(firstDayOfMonth);
 
   const dateSessionMap = useMemo(() => {
-    const map = {};
-    // eslint-disable-next-line no-unused-vars
-    Object.entries(sessions).forEach(([recordId, sessions]) => {
-      const date = ConvertDate(sessions[0].workout_date);
-      map[date] = sessions[0].template_name;
-    });
-    return map;
+    if (sessions) {
+      const map = {};
+      // eslint-disable-next-line no-unused-vars
+      Object.entries(sessions).forEach(([recordId, sessions]) => {
+        const date = ConvertDate(sessions[0].workout_date);
+        map[date] = sessions[0].template_name;
+      });
+      return map;
+    } else {
+      return {};
+    }
   }, [sessions]);
+
+  const handleSessionSelection = (e) => {
+    e.preventDefault();
+  };
 
   return (
     <div className="container">
@@ -56,7 +64,16 @@ const SessionCalendar = ({ sessions }) => {
               })}
             >
               {format(day, "d")}
-              {templateName && <div>{templateName}</div>}
+              {templateName && (
+                <div
+                  onClick={handleSessionSelection}
+                  style={{ cursor: "pointer" }}
+                  className="border rounded-md bg-secondary text-light"
+                >
+                  {templateName}
+                </div>
+              )}
+              {!templateName && <div>{templateName || "\u00A0"}</div>}
             </div>
           );
         })}

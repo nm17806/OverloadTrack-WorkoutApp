@@ -7,6 +7,9 @@ import Col from "react-bootstrap/Col";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import _ from "lodash";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import Form from "react-bootstrap/Form";
 
 export default function FetchWorkouts() {
   const [workouts, setWorkouts] = useState([]);
@@ -15,6 +18,21 @@ export default function FetchWorkouts() {
   const [showModal, setShowModal] = useState(false);
   const [showWorkoutModal, setShowWorkoutModal] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
+  const [filteredWorkouts, setFilteredWorkouts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    // Use lodash to filter the exercises based on the search query
+    const filtered = _.filter(workoutName, (workout) =>
+      _.includes(workout.template_name.toLowerCase(), query.toLowerCase())
+    );
+
+    // Update the filteredExercises state
+    setFilteredWorkouts(filtered);
+  };
 
   useEffect(() => {
     axios
@@ -32,6 +50,7 @@ export default function FetchWorkouts() {
       .get("api/workouts")
       .then(function (res) {
         setWorkoutName(res.data);
+        setFilteredWorkouts(res.data);
       })
       .catch(function (err) {
         console.log(err);
@@ -77,7 +96,12 @@ export default function FetchWorkouts() {
 
   return (
     <div>
-      {workoutName.map((workout) => {
+      <Form>
+        <FloatingLabel controlId="floatingInputSeartch" label="Search Exercises" className="mb-3">
+          <Form.Control value={searchQuery} onChange={handleSearch} type="text" placeholder="eg. Chest" />
+        </FloatingLabel>
+      </Form>
+      {filteredWorkouts.map((workout) => {
         const checkForExercises = workouts.find((exercise) => exercise.template_id === workout.template_id);
         const filteredExercises = workouts.filter((exercise) => exercise.template_id === workout.template_id);
 

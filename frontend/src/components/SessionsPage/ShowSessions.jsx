@@ -2,20 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ConvertDate from "../Shared/ConvertDate";
 
-export default function ShowSessions() {
+export default function ShowSessions({ onGroupedSessions }) {
   const [allSessions, setAllSessions] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("api/sessions")
-      .then(function (res) {
-        console.log(JSON.stringify(res.data, null, 2));
-        setAllSessions(res.data);
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
-  }, []);
+  const [groupedSessions, setGroupedSessions] = useState({});
 
   // Helper function to group by record_id
   const groupBy = (array, key) => {
@@ -25,8 +14,6 @@ export default function ShowSessions() {
     }, {});
   };
 
-  const groupedSessions = groupBy(allSessions, "record_id");
-
   const [expandedRecords, setExpandedRecords] = useState({});
 
   const toggleRecord = (recordId) => {
@@ -35,6 +22,28 @@ export default function ShowSessions() {
       [recordId]: !expandedRecords[recordId],
     });
   };
+
+  useEffect(() => {
+    axios
+      .get("api/sessions")
+      .then(function (res) {
+        setAllSessions(res.data);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    const grouped = groupBy(allSessions, "record_id");
+    setGroupedSessions(grouped);
+  }, [allSessions]);
+
+  useEffect(() => {
+    if (groupedSessions) {
+      onGroupedSessions(groupedSessions);
+    }
+  }, [groupedSessions, onGroupedSessions]);
 
   return (
     <div>

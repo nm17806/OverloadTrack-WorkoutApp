@@ -1,22 +1,26 @@
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import ShowSessions from "../components/SessionsPage/ShowSessions";
-import { Link } from "react-router-dom";
+import SessionCalendar from "../components/SessionsPage/SessionCalendar";
+import { useState } from "react";
 
 export default function Sessions() {
+  const [groupedSessions, setGroupedSessions] = useState(null);
+
+  const handleGroupedSessions = (data) => {
+    setGroupedSessions(data);
+  };
+
   return (
     <Container>
-      <Row className="workoutsRow">
-        <Col xs={12} md={8}>
-          <ShowSessions />
-        </Col>
-        <Col xs={12} md={4}>
-          <Link to="/record-session">
-            <button href="/record-session">Start a Session</button>
-          </Link>
-        </Col>
-      </Row>
+      <SessionCalendar sessions={groupedSessions} />
+      <br />
+      <ShowSessions onGroupedSessions={handleGroupedSessions} />
     </Container>
   );
 }
+
+// [
+//   { date: subDays(new Date(), 6), title: "Post video" },
+//   { date: subDays(new Date(), 1), title: "Edit video" },
+//   { date: addDays(new Date(), 3), title: "Code" },
+// ]

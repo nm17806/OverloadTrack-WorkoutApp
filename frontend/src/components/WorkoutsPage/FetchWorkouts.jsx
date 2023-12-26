@@ -97,7 +97,7 @@ export default function FetchWorkouts() {
   return (
     <div>
       <Form>
-        <FloatingLabel controlId="floatingInputSeartch" label="Search Exercises" className="mb-3">
+        <FloatingLabel controlId="floatingInputSeartch" label="Search Workouts" className="mb-3">
           <Form.Control value={searchQuery} onChange={handleSearch} type="text" placeholder="eg. Chest" />
         </FloatingLabel>
       </Form>

@@ -7,7 +7,7 @@ const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 // ... (imports)
 
-const SessionCalendar = ({ sessions }) => {
+const SessionCalendar = ({ sessions, onSelectedRecordId }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const firstDayOfMonth = startOfMonth(currentDate);
   const lastDayOfMonth = endOfMonth(currentDate);
@@ -34,7 +34,7 @@ const SessionCalendar = ({ sessions }) => {
   }, [sessions]);
 
   const handleSessionSelection = (recordId) => {
-    console.log(recordId);
+    onSelectedRecordId(recordId);
   };
 
   const goToPreviousMonth = () => {

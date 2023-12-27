@@ -5,16 +5,21 @@ import { useState } from "react";
 
 export default function Sessions() {
   const [groupedSessions, setGroupedSessions] = useState(null);
+  const [recordID, setRecordID] = useState(null);
 
   const handleGroupedSessions = (data) => {
     setGroupedSessions(data);
   };
 
+  const handleRecordId = (data) => {
+    setRecordID(data);
+  };
+
   return (
     <Container>
-      <SessionCalendar sessions={groupedSessions} />
+      <SessionCalendar onSelectedRecordId={handleRecordId} sessions={groupedSessions} />
       <br />
-      <ShowSessions onGroupedSessions={handleGroupedSessions} />
+      <ShowSessions onGroupedSessions={handleGroupedSessions} selectedRecordId={recordID} />
     </Container>
   );
 }

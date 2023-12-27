@@ -7,6 +7,7 @@ const app = express();
 const exerciseRoutes = require("./routes/r-exercises");
 const workoutRoutes = require("./routes/r-workouts");
 const sessionRoutes = require("./routes/r-sessions");
+const authRoutes = require("./routes/r-auth");
 
 // Middleware
 app.use(express.json());
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 app.use("/api/exercises", exerciseRoutes);
 app.use("/api/workouts", workoutRoutes);
 app.use("/api/sessions", sessionRoutes);
+app.use("/api/auth", authRoutes);
 
 // Connect to db
 app.listen(process.env.PORT, () => {

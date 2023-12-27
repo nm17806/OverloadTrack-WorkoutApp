@@ -39,6 +39,7 @@ export default function AddExerciseToWorkout() {
     } else {
       setError(true);
     }
+    window.location.reload();
   };
 
   const onSelection = (item, id) => {

@@ -1,6 +1,7 @@
 const mysql = require("mysql2/promise");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
@@ -40,8 +41,9 @@ const login = async (req, res) => {
     try {
       // Check password
       const passwordMatch = bcrypt.compareSync(password, checkForUser[0].password);
+      const token = jwt.sign({ id: checkForUser[0].user_id }, "jwtkey", { expiresIn: "1h" });
       if (passwordMatch) {
-        res.status(200).send({ email });
+        res.status(200).send({ id: checkForUser[0].user_id, email });
       } else {
         res.status(400).send({ error: "Incorrect password" });
       }

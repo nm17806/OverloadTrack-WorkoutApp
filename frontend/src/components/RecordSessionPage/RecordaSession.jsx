@@ -6,6 +6,11 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Accordion from "react-bootstrap/Accordion";
 
+const now = new Date();
+const localDateTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+  now.getDate()
+).padStart(2, "0")}T${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
 export default function RecordaSession({ openAccordion, setOpenAccordion }) {
   const [workoutName, setWorkoutName] = useState([]);
   const [selectedWorkout, setSelectedWorkout] = useState("Select a Workout");
@@ -16,9 +21,9 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
     reps: "",
   });
   const [recordId, setRecordId] = useState(0);
-  const [submittedSets, setSubmittedSets] = useState([]);
+  const [submittedSetsByExercise, setSubmittedSetsByExercise] = useState({});
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [dateTime, setDateTime] = useState("");
+  const [dateTime, setDateTime] = useState(localDateTime);
 
   const onSelection = (item, id) => {
     setSelectedWorkout(item);
@@ -35,7 +40,6 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
       .then(function (res) {
         // handle success
         setWorkoutExercises(res.data);
-        console.log(res.data);
         setIsFormSubmitted(true); // Set form submitted flag
       })
       .catch(function (err) {
@@ -61,16 +65,23 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
   const handleSetFormSubmit = (e, exerciseId) => {
     e.preventDefault();
 
-    setSubmittedSets((prevSets) => [
-      ...prevSets,
-      {
-        record_id: recordId,
-        exercise_id: exerciseId,
-        weight: formData.weight,
-        reps: formData.reps,
-      },
-    ]);
-    console.log(submittedSets);
+    setSubmittedSetsByExercise((prevSets) => {
+      const updatedSets = [
+        ...(prevSets[exerciseId] || []),
+        {
+          record_id: recordId,
+          exercise_id: exerciseId,
+          weight: formData.weight,
+          reps: formData.reps,
+        },
+      ];
+      return {
+        ...prevSets,
+        [exerciseId]: updatedSets,
+      };
+    });
+
+    console.log(submittedSetsByExercise);
   };
 
   const postSetToBackend = (set) => {
@@ -87,9 +98,12 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
   };
 
   const handleWorkoutSubmit = () => {
-    submittedSets.forEach((set) => {
-      postSetToBackend(set);
+    Object.values(submittedSetsByExercise).forEach((sets) => {
+      sets.forEach((set) => {
+        postSetToBackend(set);
+      });
     });
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -109,11 +123,6 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
     setOpenAccordion(openAccordion === eventKey ? null : eventKey);
     console.log(openAccordion);
   };
-
-  const now = new Date();
-  const localDateTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
-    now.getDate()
-  ).padStart(2, "0")}T${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
 
   return (
     <Container>
@@ -142,7 +151,9 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
           <br />
 
           <Form.Control
-            onChange={(e) => setDateTime(e.target.value)}
+            onChange={(e) => {
+              setDateTime(e.target.value);
+            }}
             className="p-3 w-75 d-block mx-auto"
             type="datetime-local"
             defaultValue={localDateTime}
@@ -194,11 +205,12 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
                 <Accordion.Body className="text-center text-decoration-underline">Submitted Sets</Accordion.Body>
                 <Accordion.Body>
                   {/* Display submitted sets here based on the state */}
-                  {submittedSets.map((set, index) => (
-                    <div key={index}>
-                      Weight: {set.weight}, Reps: {set.reps}
-                    </div>
-                  ))}
+                  {submittedSetsByExercise[exercise.exercise_id] &&
+                    submittedSetsByExercise[exercise.exercise_id].map((set, index) => (
+                      <div key={index}>
+                        Weight: {set.weight}, Reps: {set.reps}
+                      </div>
+                    ))}
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>

@@ -1,14 +1,10 @@
-.container {
+.event-calendar-container {
   margin: auto;
   padding: 1rem;
 }
 
-.mb-4 {
+.header {
   margin-bottom: 1rem;
-}
-
-.text-center {
-  text-align: center;
 }
 
 .grid {
@@ -17,7 +13,7 @@
   gap: 0.5rem;
 }
 
-.font-bold {
+.day-label {
   font-weight: bold;
 }
 
@@ -25,22 +21,32 @@
   border: 1px solid;
 }
 
-.rounded-md {
-  border-radius: 0.375rem;
-}
-
 .p-2 {
   padding: 0.5rem;
 }
 
-.bg-gray-200 {
+.today-cell {
   background-color: #edf2f7;
+  color: #000000;
 }
 
-.text-gray-900 {
-  color: #1a202c;
-}
-
-.bg-green-500 {
+.nav-button {
+  margin: 0.2rem;
   background-color: #48bb78;
+}
+
+.event-cell {
+  cursor: pointer;
+  border-radius: 0.375rem;
+}
+
+.empty-day {
+  border: 1px solid;
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+}
+
+.day-cell {
+  border-radius: 0.375rem;
+  padding: 0.5rem;
 }

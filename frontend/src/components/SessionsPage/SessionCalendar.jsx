@@ -1,10 +1,11 @@
-import clsx from "clsx";
 import { eachDayOfInterval, endOfMonth, format, getDay, isToday, startOfMonth, subMonths, addMonths } from "date-fns";
 import { useMemo, useState } from "react";
 import "./EventCalendar.css";
 import ConvertDate from "../Shared/ConvertDate";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+// ... (imports)
 
 const SessionCalendar = ({ sessions }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -47,46 +48,40 @@ const SessionCalendar = ({ sessions }) => {
   };
 
   return (
-    <div className="container">
-      <div className="mb-4">
+    <div className="event-calendar-container">
+      <div className="header">
         <h2 className="text-center">{format(currentDate, "MMMM yyyy")}</h2>
-        <button onClick={goToPreviousMonth}>&lt;</button>
-        <button onClick={goToNextMonth}>&gt;</button>
+        <button className="nav-button" onClick={goToPreviousMonth}>
+          &lt;
+        </button>
+        <button className="nav-button" onClick={goToNextMonth}>
+          &gt;
+        </button>
       </div>
       <div className="grid">
-        {WEEKDAYS.map((day) => {
-          return (
-            <div key={day} className="font-bold text-center">
-              {day}
-            </div>
-          );
-        })}
-        {Array.from({ length: startingDayIndex }).map((_, index) => {
-          return <div key={`empty-${index}`} className="border rounded-md p-2 text-center" />;
-        })}
+        {WEEKDAYS.map((day) => (
+          <div key={day} className="day-label font-bold text-center">
+            {day}
+          </div>
+        ))}
+        {Array.from({ length: startingDayIndex }).map((_, index) => (
+          <div key={`empty-${index}`} className="empty-day border text-center" />
+        ))}
         {daysInMonth.map((day, index) => {
           const formattedDate = ConvertDate(day);
           const templateName = dateSessionMap[formattedDate];
           return (
-            <div
-              key={index}
-              className={clsx("border rounded-md p-2 text-center", {
-                "bg-gray-200": isToday(day),
-                "text-gray-900": isToday(day),
-              })}
-            >
+            <div key={index} className={`day-cell border text-center ${isToday(day) ? "today-cell" : ""}`}>
               {format(day, "d")}
               {templateName && (
                 <div
                   onClick={() => handleSessionSelection(templateName.record_id)}
-                  style={{ cursor: "pointer" }}
-                  className="border rounded-md bg-secondary text-light"
+                  className="event-cell border bg-secondary text-light"
                 >
                   {templateName.template_name}
                 </div>
               )}
-              {!templateName ||
-                (!templateName.template_name && <div>{templateName ? templateName.template_name : "\u00A0"}</div>)}
+              {!templateName && <div>{templateName ? templateName.template_name : "\u00A0"}</div>}
             </div>
           );
         })}

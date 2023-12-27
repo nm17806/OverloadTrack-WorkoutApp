@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "./WorkoutsModal.css";
+import "./AddExerciseToWorkout.css";
 
 export default function AddExerciseToWorkout() {
   const [workoutName, setWorkoutName] = useState([]);

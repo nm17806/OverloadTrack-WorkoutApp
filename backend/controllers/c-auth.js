@@ -2,6 +2,7 @@ const mysql = require("mysql2/promise");
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
@@ -13,9 +14,9 @@ const pool = mysql.createPool({
 const register = async (req, res) => {
   // Check if user exists
   const { email, password } = req.body;
-  const [checkForUser] = await pool.query(`SELECT * FROM user_auth WHERE email = ?`, [email]);
+  const [User] = await pool.query(`SELECT * FROM user_auth WHERE email = ?`, [email]);
 
-  if (checkForUser.length > 0) {
+  if (User.length > 0) {
     res.status(400).send({ error: "There is already an account associated with this email address" });
   } else {
     try {
@@ -32,24 +33,37 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  // Check if user exists
-  const { email, password } = req.body;
-  const [checkForUser] = await pool.query(`SELECT * FROM user_auth WHERE email = ?`, [email]);
-  if (!checkForUser.length > 0) {
-    res.status(400).send({ error: "There is no account associated with this email address" });
-  } else {
-    try {
-      // Check password
-      const passwordMatch = bcrypt.compareSync(password, checkForUser[0].password);
-      const token = jwt.sign({ id: checkForUser[0].user_id }, "jwtkey", { expiresIn: "1h" });
-      if (passwordMatch) {
-        res.status(200).send({ id: checkForUser[0].user_id, email });
-      } else {
-        res.status(400).send({ error: "Incorrect password" });
-      }
-    } catch (err) {
-      res.status(500).send({ error: err.message });
+  try {
+    // Check if user exists
+    const { email, password } = req.body;
+    const [user] = await pool.query(`SELECT * FROM user_auth WHERE email = ?`, [email]);
+
+    if (!user.length > 0) {
+      return res.status(404).send({ error: "There is no account associated with this email address" });
     }
+
+    // Check password
+    const passwordMatch = bcrypt.compareSync(password, user[0].password);
+
+    if (!passwordMatch) {
+      return res.status(400).send({ error: "Incorrect password" });
+    }
+
+    // If email and password are correct, generate a token
+    const token = jwt.sign({ id: user[0].user_id }, "jwtkey", { expiresIn: "1h" });
+
+    // Exclude the password from the response
+    const { password: userPassword, ...other } = user[0];
+
+    // Set the token as an HTTP-only cookie
+    res.cookie("access_token", token, { httpOnly: true });
+
+    // Send a successful response with user information (excluding the password)
+    res.status(200).send(other);
+  } catch (err) {
+    // Handle unexpected errors
+    console.error(err);
+    res.status(500).send({ error: "Internal Server Error" });
   }
 };
 

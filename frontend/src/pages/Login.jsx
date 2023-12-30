@@ -4,32 +4,33 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "../index.scss";
-import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+// import axios from "axios";
 
 export default function Login() {
   const [inputs, setInputs] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
+
+  const { login } = useContext(AuthContext);
+
+  console.log(inputs);
+
   const handlechange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  console.log(inputs);
-
-  const handlesubmit = (e) => {
+  const handlesubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post("/api/auth/login", inputs)
-      .then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          window.location.href = "/";
-        }
-      })
-      .catch((err) => {
-        console.log(err.response.data.error);
-        setError(err.response.data.error);
-      });
+    try {
+      await login(inputs);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+      setError(err);
+    }
   };
 
   return (

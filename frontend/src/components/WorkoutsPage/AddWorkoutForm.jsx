@@ -3,11 +3,15 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function AddWorkoutForm() {
   const [workout, setWorkout] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const { currentUser } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,9 +19,17 @@ export default function AddWorkoutForm() {
     if (workout) {
       setIsLoading(true);
       axios
-        .post("api/workouts", {
-          template_name: workout,
-        })
+        .post(
+          "api/workouts",
+          {
+            template_name: workout,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${currentUser.token}`,
+            },
+          }
+        )
         .then(function (res) {
           setWorkout("");
           console.log(res);

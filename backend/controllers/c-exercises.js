@@ -26,6 +26,7 @@ const getExercises = async (req, res) => {
   }
 };
 
+// Not sure if this is needed
 const getExercise = async (req, res) => {
   const id = req.params.exercise_id;
 
@@ -39,12 +40,13 @@ const getExercise = async (req, res) => {
 
 const createExercise = async (req, res) => {
   const { exercise_name, body_part } = req.body;
+  const user_id = req.user.id;
   try {
     const [result] = await pool.query(
       `
-  INSERT INTO exercise (exercise_name, body_part)
-  VALUES (?,?)`,
-      [exercise_name, body_part]
+  INSERT INTO exercise (exercise_name, body_part, user_id)
+  VALUES (?,?,?)`,
+      [exercise_name, body_part, user_id]
     );
     res.status(201).send({ id: result.insertId, exercise_name, body_part });
   } catch (err) {

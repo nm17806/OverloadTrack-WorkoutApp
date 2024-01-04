@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { getSessions, getSession, postSessionRecord, postSessionSets } = require("../controllers/c-sessions");
+const authenticateToken = require("../middleware/requireAuth");
+
+router.use(authenticateToken);
 
 // Get all
 router.get("/", getSessions);

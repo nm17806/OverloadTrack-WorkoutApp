@@ -9,6 +9,9 @@ const {
   removeExerciseFromWorkout,
   getWorkout,
 } = require("../controllers/c-workouts");
+const authenticateToken = require("../middleware/requireAuth");
+
+router.use(authenticateToken);
 
 router.get("/exercises", getWorkoutsandExercises);
 

@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ConvertDate from "../Shared/ConvertDate";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function SeePreviousSessions({ openAccordion }) {
   const [allSessions, setAllSessions] = useState([]);
 
   // I need to record the useState of which accrodian is open, in RecordSession.jsx and pass it here as a prop.
 
+  const { currentUser } = useContext(AuthContext);
+
   useEffect(() => {
     axios
-      .get("api/sessions")
+      .get("api/sessions", { headers: { Authorization: `Bearer ${currentUser.token}` } })
       .then(function (res) {
         console.log(JSON.stringify(res.data[0], null, 2));
         setAllSessions(res.data);
@@ -17,7 +21,7 @@ export default function SeePreviousSessions({ openAccordion }) {
       .catch(function (err) {
         console.log(err);
       });
-  }, []);
+  }, [currentUser.token]);
 
   const filterExercise = allSessions.filter((session) => session.exercise_id == openAccordion);
 

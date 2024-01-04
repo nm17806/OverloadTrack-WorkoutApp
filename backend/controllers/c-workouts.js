@@ -10,20 +10,29 @@ const pool = mysql.createPool({
 
 const getWorkoutsandExercises = async (req, res) => {
   // This shows what exercises have been added to which workout templates
+
   try {
-    const [result] = await pool.query(`
-    SELECT
-    WTE.id,
-    WT.template_id AS template_id,
-    E.exercise_id AS exercise_id,
-    WT.template_name AS workout_template_name,
-    E.exercise_name AS exercise_name,
-    E.body_part AS body_part
-    FROM Workout_Template_Exercise AS WTE
-    JOIN Workout_Template AS WT ON WTE.template_id = WT.template_id
-    JOIN Exercise AS E ON WTE.exercise_id = E.exercise_id
-    WHERE WTE.is_active = true;
-      `);
+    const user_id = req.user.id;
+
+    const [result] = await pool.query(
+      `
+  SELECT
+      WTE.id,
+      WT.template_id AS template_id,
+      E.exercise_id AS exercise_id,
+      WT.template_name AS workout_template_name,
+      E.exercise_name AS exercise_name,
+      E.body_part AS body_part
+  FROM
+      Workout_Template_Exercise AS WTE
+      JOIN Workout_Template AS WT ON WTE.template_id = WT.template_id
+      JOIN Exercise AS E ON WTE.exercise_id = E.exercise_id
+  WHERE
+      WTE.is_active = true
+      AND WTE.user_id = ?;
+      `,
+      [user_id]
+    );
     res.status(200).send(result);
   } catch (err) {
     res.status(500).send({ error: err.message });
@@ -32,10 +41,13 @@ const getWorkoutsandExercises = async (req, res) => {
 
 const getWorkouts = async (req, res) => {
   try {
+    const user_id = req.user.id;
+
     const [result] = await pool.query(
       `
-      SELECT * FROM workout_template WHERE is_active = true
-      `
+      SELECT * FROM workout_template WHERE is_active = true AND user_id = ?;
+      `,
+      [user_id]
     );
     res.status(200).send(result);
   } catch (err) {
@@ -46,6 +58,7 @@ const getWorkouts = async (req, res) => {
 const getWorkout = async (req, res) => {
   const id = req.params.template_id;
   try {
+    const user_id = req.user.id;
     const [result] = await pool.query(
       `
       SELECT
@@ -58,9 +71,9 @@ const getWorkout = async (req, res) => {
       FROM Workout_Template_Exercise AS WTE
     JOIN Workout_Template AS WT ON WTE.template_id = WT.template_id
     JOIN Exercise AS E ON WTE.exercise_id = E.exercise_id
-    WHERE WTE.is_active = true AND WT.template_id = ?;
+    WHERE WTE.is_active = true AND WT.template_id = ? AND WTE.user_id = ?;
       `,
-      [id]
+      [id, user_id]
     );
     res.status(200).send(result);
   } catch (err) {
@@ -81,11 +94,12 @@ const disableWorkout = async (req, res) => {
 const addWorkout = async (req, res) => {
   const { template_name } = req.body;
   try {
+    const user_id = req.user.id;
     const [result] = await pool.query(
       `
-  INSERT INTO workout_template (template_name)
-  VALUES (?);`,
-      [template_name]
+  INSERT INTO workout_template (template_name, user_id)
+  VALUES (?,?);`,
+      [template_name, user_id]
     );
     res.status(201).send({ id: result.insertId, template_name });
   } catch (err) {
@@ -96,12 +110,13 @@ const addWorkout = async (req, res) => {
 const addExercisesToWorkout = async (req, res) => {
   const { template_id, exercise_id } = req.body;
   try {
+    const user_id = req.user.id;
     const [result] = await pool.query(
       `
-      INSERT INTO Workout_Template_Exercise (template_id, exercise_id)
-      VALUES (?,?);
+      INSERT INTO Workout_Template_Exercise (template_id, exercise_id, user_id)
+      VALUES (?,?,?);
       `,
-      [template_id, exercise_id]
+      [template_id, exercise_id, user_id]
     );
     res.status(201).send({ mssg: "Exercise added to workout template successfully." });
   } catch (err) {

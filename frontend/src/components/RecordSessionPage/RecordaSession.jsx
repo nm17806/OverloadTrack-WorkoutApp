@@ -5,6 +5,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Accordion from "react-bootstrap/Accordion";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 
 const now = new Date();
 const localDateTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
@@ -24,6 +26,7 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
   const [submittedSetsByExercise, setSubmittedSetsByExercise] = useState({});
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [dateTime, setDateTime] = useState(localDateTime);
+  const [error, setError] = useState(null);
 
   const onSelection = (item, id) => {
     setSelectedWorkout(item);
@@ -31,35 +34,50 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
     setIsFormSubmitted(false); // Reset form submitted flag when workout selection changes
   };
 
+  const { currentUser } = useContext(AuthContext);
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const sqlDateTime = dateTime.replace("T", " ") + ":00";
-    // Fetch workout exercises when a workout is selected
-    axios
-      .get(`api/workouts/${selectedWorkoutId}`)
-      .then(function (res) {
-        // handle success
-        setWorkoutExercises(res.data);
-        setIsFormSubmitted(true); // Set form submitted flag
-      })
-      .catch(function (err) {
-        // handle error
-        console.log(err);
-      });
 
-    axios
-      .post(`api/sessions/record`, {
-        workout_date: sqlDateTime,
-        template_id: selectedWorkoutId,
-      })
-      .then(function (res) {
-        // handle success
-        setRecordId(res.data.id);
-      })
-      .catch(function (err) {
-        // handle error
-        console.log(err);
-      });
+    if (selectedWorkout !== "Select a Workout") {
+      const sqlDateTime = dateTime.replace("T", " ") + ":00";
+
+      axios
+        .get(`api/workouts/${selectedWorkoutId}`, {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        })
+        .then(function (res) {
+          setWorkoutExercises(res.data);
+          setIsFormSubmitted(true);
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+
+      axios
+        .post(
+          `api/sessions/record`,
+          {
+            workout_date: sqlDateTime,
+            template_id: selectedWorkoutId,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${currentUser.token}`,
+            },
+          }
+        )
+        .then(function (res) {
+          setRecordId(res.data.id);
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    } else {
+      setError("Please select a workout");
+    }
   };
 
   const handleSetFormSubmit = (e, exerciseId) => {
@@ -86,7 +104,11 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
 
   const postSetToBackend = (set) => {
     axios
-      .post("api/sessions", set)
+      .post("api/sessions", set, {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      })
       .then(function (res) {
         // handle success if needed
         console.log(res.data);
@@ -108,7 +130,11 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
 
   useEffect(() => {
     axios
-      .get("api/workouts")
+      .get("api/workouts", {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      })
       .then(function (res) {
         // handle success
         setWorkoutName(res.data);
@@ -117,7 +143,7 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
         // handle error
         console.log(err);
       });
-  }, []);
+  }, [currentUser.token]);
 
   const handleAccordionClick = (eventKey) => {
     setOpenAccordion(openAccordion === eventKey ? null : eventKey);
@@ -163,6 +189,7 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
           <Button className="w-50" variant="primary" type="submit">
             Submit
           </Button>
+          <div className="error">{error ? error : null}</div>
         </Form>
       )}
       <br />
@@ -171,7 +198,7 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
         workoutExercises.map((exercise, index) => (
           <div key={exercise.id}>
             <Accordion activeKey={openAccordion}>
-              <Accordion.Item eventKey={exercise.exercise_id.toString()} key={index}>
+              <Accordion.Item eventKey={exercise.exercise_id ? exercise.exercise_id.toString() : null} key={index}>
                 <Accordion.Header onClick={() => handleAccordionClick(exercise.exercise_id.toString())}>
                   {exercise.exercise_name} ({exercise.body_part})
                 </Accordion.Header>

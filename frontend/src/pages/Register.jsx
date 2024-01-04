@@ -5,6 +5,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useState } from "react";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react";
 
 export default function Register() {
   const [inputs, setInputs] = useState({ email: "", password: "" });
@@ -14,10 +16,16 @@ export default function Register() {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const { currentUser } = useContext(AuthContext);
+
   const handlesubmit = (e) => {
     e.preventDefault();
     axios
-      .post("/api/auth/register", inputs)
+      .post("/api/auth/register", inputs, {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      })
       .then((res) => {
         console.log(res);
         if (res.status === 201) {

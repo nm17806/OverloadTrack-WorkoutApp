@@ -6,14 +6,22 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 
 export default function ExerciseCards({ exercise }) {
   const [showModal, setShowModal] = useState(false);
 
+  const { currentUser } = useContext(AuthContext);
+
   const handleDelete = () => {
     setShowModal(false);
     axios
-      .patch(`api/exercises/${exercise.exercise_id}`)
+      .patch(`api/exercises/${exercise.exercise_id}`, null, {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      })
       .then(function (res) {
         // handle success
         console.log(res);

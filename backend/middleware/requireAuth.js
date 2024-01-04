@@ -1,10 +1,18 @@
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
+  const authorizationHeader = req.headers.authorization;
+
+  if (!authorizationHeader) {
+    return res.status(401).json({ error: "Not Authenticated!" });
+  }
+
+  const token = authorizationHeader.split(" ")[1];
   const secretKey = process.env.SECRET;
 
-  if (!token) return res.status(401).json({ error: "Not Authenticated!" });
+  if (!token) {
+    return res.status(401).json({ error: "Not Authenticated!" });
+  }
 
   jwt.verify(token, secretKey, (err, decoded) => {
     if (err) {

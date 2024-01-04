@@ -11,7 +11,9 @@ const pool = mysql.createPool({
 // Grabs the workout session date and the workout name
 const getSessions = async (req, res) => {
   try {
-    const [result] = await pool.query(`SELECT
+    const user_id = req.user.id;
+    const [result] = await pool.query(
+      `SELECT
     uwr.record_id,  
     uws.set_id,
     wtr.template_name,
@@ -24,7 +26,11 @@ const getSessions = async (req, res) => {
 FROM User_Workout_Set AS uws
 JOIN Exercise AS e ON uws.exercise_id = e.exercise_id
 JOIN User_Workout_Record AS uwr ON uws.record_id = uwr.record_id
-JOIN Workout_Template AS wtr ON uwr.template_id = wtr.template_id`);
+JOIN Workout_Template AS wtr ON uwr.template_id = wtr.template_id
+WHERE uws.user_id = ?
+`,
+      [user_id]
+    );
     res.status(200).send(result);
   } catch (err) {
     res.status(500).send({ error: err.message });
@@ -35,6 +41,7 @@ JOIN Workout_Template AS wtr ON uwr.template_id = wtr.template_id`);
 const getSession = async (req, res) => {
   const id = req.params.record_id;
   try {
+    const user_id = req.user.id;
     const [result] = await pool.query(
       `SELECT
         uwr.record_id,  
@@ -49,8 +56,9 @@ const getSession = async (req, res) => {
     JOIN Exercise AS e ON uws.exercise_id = e.exercise_id
     JOIN User_Workout_Record AS uwr ON uws.record_id = uwr.record_id
     JOIN Workout_Template AS wtr ON uwr.template_id = wtr.template_id
-    WHERE  uwr.record_id = ?`,
-      [id]
+    WHERE  uwr.record_id = ? AND uws.user_id = ?
+    `,
+      [id, user_id]
     );
     res.status(200).send(result);
   } catch (err) {
@@ -61,10 +69,11 @@ const getSession = async (req, res) => {
 const postSessionRecord = async (req, res) => {
   const { template_id, workout_date } = req.body;
   try {
-    const [result] = await pool.query(`INSERT INTO User_Workout_Record (template_id, workout_date) VALUES (?, ?)`, [
-      template_id,
-      workout_date,
-    ]);
+    const user_id = req.user.id;
+    const [result] = await pool.query(
+      `INSERT INTO User_Workout_Record (template_id, workout_date, user_id) VALUES (?,?,?)`,
+      [template_id, workout_date, user_id]
+    );
     res.status(200).send({ id: result.insertId });
   } catch (err) {
     res.status(500).send({ error: err.message });
@@ -74,9 +83,10 @@ const postSessionRecord = async (req, res) => {
 const postSessionSets = async (req, res) => {
   const { record_id, exercise_id, weight, reps } = req.body;
   try {
+    const user_id = req.user.id;
     const [result] = await pool.query(
-      `INSERT INTO User_Workout_Set (record_id, exercise_id, weight, reps) VALUES (?, ?, ?, ?)`,
-      [record_id, exercise_id, weight, reps]
+      `INSERT INTO User_Workout_Set (record_id, exercise_id, weight, reps, user_id) VALUES (?, ?, ?, ?, ?)`,
+      [record_id, exercise_id, weight, reps, user_id]
     );
     res.status(200).send({ id: result.insertId });
   } catch (err) {

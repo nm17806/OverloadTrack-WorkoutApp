@@ -10,6 +10,8 @@ import Button from "react-bootstrap/Button";
 import _ from "lodash";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function FetchWorkouts() {
   const [workouts, setWorkouts] = useState([]);
@@ -20,6 +22,8 @@ export default function FetchWorkouts() {
   const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [filteredWorkouts, setFilteredWorkouts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { currentUser } = useContext(AuthContext);
 
   const handleSearch = (e) => {
     const query = e.target.value;
@@ -36,18 +40,26 @@ export default function FetchWorkouts() {
 
   useEffect(() => {
     axios
-      .get("api/workouts/exercises")
+      .get("api/workouts/exercises", {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      })
       .then(function (res) {
         setWorkouts(res.data);
       })
       .catch(function (err) {
         console.log(err);
       });
-  }, []);
+  }, [currentUser.token]);
 
   useEffect(() => {
     axios
-      .get("api/workouts")
+      .get("api/workouts", {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      })
       .then(function (res) {
         setWorkoutName(res.data);
         setFilteredWorkouts(res.data);
@@ -55,7 +67,7 @@ export default function FetchWorkouts() {
       .catch(function (err) {
         console.log(err);
       });
-  }, []);
+  }, [currentUser.token]);
 
   const handleDelete = () => {
     setShowModal(false);
@@ -65,7 +77,11 @@ export default function FetchWorkouts() {
       const { id } = selectedExercise;
 
       axios
-        .patch(`api/workouts/exercises/${id}`)
+        .patch(`api/workouts/exercises/${id}`, null, {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        })
         .then(function (res) {
           setSelectedExercise(null);
           console.log(res);
@@ -83,7 +99,11 @@ export default function FetchWorkouts() {
       const { template_id } = selectedWorkout;
 
       axios
-        .patch(`api/workouts/${template_id}`)
+        .patch(`api/workouts/${template_id}`, null, {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        })
         .then(function (res) {
           setSelectedWorkout(null);
           console.log(res);

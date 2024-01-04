@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ConvertDate from "../Shared/ConvertDate";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function ShowSessions({ onGroupedSessions, selectedRecordId }) {
   const [allSessions, setAllSessions] = useState([]);
@@ -14,16 +16,22 @@ export default function ShowSessions({ onGroupedSessions, selectedRecordId }) {
     }, {});
   };
 
+  const { currentUser } = useContext(AuthContext);
+
   useEffect(() => {
     axios
-      .get("api/sessions")
+      .get("api/sessions", {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      })
       .then(function (res) {
         setAllSessions(res.data);
       })
       .catch(function (err) {
         console.log(err);
       });
-  }, []);
+  }, [currentUser.token]);
 
   useEffect(() => {
     const grouped = groupBy(allSessions, "record_id");

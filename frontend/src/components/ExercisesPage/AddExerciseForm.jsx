@@ -3,6 +3,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import axios from "axios";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 
 export default function AddExerciseForm() {
   const [exercise, setExercise] = useState("");
@@ -10,15 +12,25 @@ export default function AddExerciseForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const { currentUser } = useContext(AuthContext);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     axios
-      .post("api/exercises", {
-        exercise_name: exercise,
-        body_part: bodyPart,
-      })
+      .post(
+        "api/exercises",
+        {
+          exercise_name: exercise,
+          body_part: bodyPart,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      )
       .then(function (res) {
         setExercise("");
         setBodyPart("");
@@ -63,12 +75,7 @@ export default function AddExerciseForm() {
           </Button>
         )}
         <br />
-        {error && (
-          <div className="error">
-            Something Went Wrong! <br />
-            Please try again later.
-          </div>
-        )}
+        {error && <div className="error">Error</div>}
       </Form>
     </div>
   );

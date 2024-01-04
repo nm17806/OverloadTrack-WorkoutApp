@@ -4,9 +4,9 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "../index.scss";
-import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../components/Hooks/useAuthContext";
 
 export default function Login() {
   const [inputs, setInputs] = useState({ email: "", password: "" });
@@ -14,7 +14,7 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const { login } = useContext(AuthContext);
+  const { login } = useAuthContext();
 
   console.log(inputs);
 

@@ -1,14 +1,13 @@
 import axios from "axios";
 import { createContext, useState } from "react";
-import { useContext } from "react";
-import { AuthContext } from "./AuthContext";
+import { useAuthContext } from "../components/Hooks/useAuthContext";
 
 export const ExercisesContext = createContext();
 
 export const ExercisesContextProvider = ({ children }) => {
   const [exercises, setExercises] = useState([]);
 
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser } = useAuthContext();
 
   const fetchExercises = async () => {
     const res = await axios.get("api/exercises", {

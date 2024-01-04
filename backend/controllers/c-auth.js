@@ -46,20 +46,20 @@ const login = async (req, res) => {
     const passwordMatch = bcrypt.compareSync(password, user[0].password);
 
     if (!passwordMatch) {
-      return res.status(400).send({ error: "Incorrect password" });
+      return res.status(400).send({ error: "Incorrect password", secure: true });
     }
 
     // If email and password are correct, generate a token
-    const token = jwt.sign({ id: user[0].user_id }, "jwtkey", { expiresIn: "1h" });
+    const token = jwt.sign({ id: user[0].user_id }, process.env.SECRET, { expiresIn: "3d" });
+    console.log(token);
 
     // Exclude the password from the response
     const { password: userPassword, ...other } = user[0];
 
-    // Set the token as an HTTP-only cookie
-    res.cookie("access_token", token, { httpOnly: true });
+    const data = { ...other, token: token };
 
     // Send a successful response with user information (excluding the password)
-    res.status(200).send(other);
+    res.status(200).send(data);
   } catch (err) {
     // Handle unexpected errors
     console.error(err);
@@ -67,6 +67,8 @@ const login = async (req, res) => {
   }
 };
 
-const logout = async (req, res) => {};
+const logout = async (req, res) => {
+  res.status(200).send({ message: "Logged out" });
+};
 
 module.exports = { register, login, logout };

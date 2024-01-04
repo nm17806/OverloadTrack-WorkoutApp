@@ -6,42 +6,58 @@ import _ from "lodash";
 import React from "react";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 
 export default function FetchExercises() {
   const [exercises, setExercises] = useState([]);
-  const [filteredExercises, setFilteredExercises] = useState([]);
+  const [filteredExercises, setFilteredExercises] = useState(exercises);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
+  };
 
+  const { currentUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchExercises = () => {
+      try {
+        axios
+          .get("api/exercises", {
+            headers: {
+              Authorization: `Bearer ${currentUser.token}`,
+            },
+          })
+          .then((res) => {
+            setExercises(res.data);
+          })
+          .catch((error) => {
+            console.error("Error fetching exercises:", error);
+          });
+      } catch (error) {
+        console.error("Error fetching exercises:", error);
+      }
+    };
+
+    fetchExercises();
+  }, [currentUser]); // Include currentUser as a dependency
+
+  useEffect(() => {
     // Use lodash to filter the exercises based on the search query
     const filtered = _.filter(
       exercises,
       (exercise) =>
-        _.includes(exercise.exercise_name.toLowerCase(), query.toLowerCase()) ||
-        _.includes(exercise.body_part.toLowerCase(), query.toLowerCase())
+        _.includes(exercise.exercise_name.toLowerCase(), searchQuery.toLowerCase()) ||
+        _.includes(exercise.body_part.toLowerCase(), searchQuery.toLowerCase())
     );
 
     // Update the filteredExercises state
     setFilteredExercises(filtered);
-  };
+  }, [exercises, searchQuery]);
 
-  useEffect(() => {
-    axios
-      .get("api/exercises")
-      .then(function (res) {
-        // handle success
-        setExercises(res.data);
-        // Initially, set filteredExercises to all exercises
-        setFilteredExercises(res.data);
-      })
-      .catch(function (err) {
-        // handle error
-        console.log(err);
-      });
-  }, []);
+  console.log(filteredExercises); // Log filtered exercises for debugging
 
   return (
     <React.Fragment>

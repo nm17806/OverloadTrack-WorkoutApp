@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { getExercises, getExercise, createExercise, disableExercise } = require("../controllers/c-exercises");
+const authenticateToken = require("../middleware/requireAuth");
 
+router.use(authenticateToken);
 // Get all
 router.get("/", getExercises);
 

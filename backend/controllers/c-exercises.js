@@ -10,7 +10,16 @@ const pool = mysql.createPool({
 
 const getExercises = async (req, res) => {
   try {
-    const [result] = await pool.query("SELECT * FROM Exercise WHERE is_active = true");
+    // Retrieve user_id from local storage
+    const user_id = req.user.id;
+
+    const [result] = await pool.query(
+      `
+    SELECT * FROM exercise
+    WHERE is_active = true
+    AND (user_id = ?)`,
+      [user_id]
+    );
     res.status(200).send(result);
   } catch (err) {
     res.status(500).send({ error: err.message });
@@ -19,6 +28,7 @@ const getExercises = async (req, res) => {
 
 const getExercise = async (req, res) => {
   const id = req.params.exercise_id;
+
   try {
     const [result] = await pool.query(`SELECT * FROM Exercise WHERE exercise_id = ?`, [id]);
     res.status(200).send(result[0]);

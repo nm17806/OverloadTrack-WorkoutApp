@@ -1,8 +1,13 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import { AuthContext } from "../../context/authContext";
+import { useContext } from "react";
 
 export default function MyNav() {
+  const { currentUser } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
+
   return (
     <Navbar bg="light" expand="sm">
       <Container>
@@ -18,8 +23,24 @@ export default function MyNav() {
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
+          <Navbar.Text className="me-3">
+            {currentUser ? (
+              <>
+                Signed in as:{" "}
+                <strong>
+                  <u>{currentUser.email}</u>
+                </strong>
+              </>
+            ) : null}
+          </Navbar.Text>
           <Navbar.Text>
-            Signed in as: <a href="/login">Mark Otto</a>
+            {currentUser ? (
+              <a href="/login" onClick={logout}>
+                Logout
+              </a>
+            ) : (
+              <a href="/login">Login</a>
+            )}
           </Navbar.Text>
         </Navbar.Collapse>
       </Container>

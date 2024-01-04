@@ -28,6 +28,7 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const serializedUser = JSON.stringify(currentUser);
       localStorage.setItem("user", serializedUser);
+      console.log(serializedUser);
     } catch (error) {
       console.error("Error while storing user data in local storage:", error);
     }

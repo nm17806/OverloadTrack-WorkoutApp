@@ -8,9 +8,6 @@ export const WorkoutsContext = createContext();
 export const WorkoutsContextProvider = ({ children }) => {
   const [workouts, setWorkouts] = useState([]);
   const [workoutName, setWorkoutName] = useState([]);
-  const [filteredWorkouts, setFilteredWorkouts] = useState([]);
-  const [selectedExercise, setSelectedExercise] = useState(null);
-  const [selectedWorkout, setSelectedWorkout] = useState(null);
 
   const { currentUser } = useContext(AuthContext);
 
@@ -21,7 +18,6 @@ export const WorkoutsContextProvider = ({ children }) => {
       },
     });
     setWorkoutName(res.data);
-    setFilteredWorkouts(res.data);
   };
 
   const fetchWorkoutExercises = async () => {
@@ -39,7 +35,6 @@ export const WorkoutsContextProvider = ({ children }) => {
         Authorization: `Bearer ${currentUser.token}`,
       },
     });
-    setSelectedExercise(null);
   };
 
   const deleteWorkout = async (workoutId) => {
@@ -48,17 +43,13 @@ export const WorkoutsContextProvider = ({ children }) => {
         Authorization: `Bearer ${currentUser.token}`,
       },
     });
-    setSelectedWorkout(null);
   };
 
   return (
     <WorkoutsContext.Provider
       value={{
-        filteredWorkouts,
         workoutName,
         workouts,
-        selectedExercise,
-        selectedWorkout,
         fetchWorkouts,
         fetchWorkoutExercises,
         deleteExercise,

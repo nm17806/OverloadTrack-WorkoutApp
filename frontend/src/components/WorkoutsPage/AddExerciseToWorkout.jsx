@@ -74,7 +74,7 @@ export default function AddExerciseToWorkout() {
         // handle error
         console.log(err);
       });
-  }, [currentUser.token]);
+  }, [currentUser]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -126,7 +126,7 @@ export default function AddExerciseToWorkout() {
         // handle error
         console.log(err);
       });
-  }, [currentUser.token]);
+  }, [currentUser]);
 
   return (
     <div className="addExerciseForm">

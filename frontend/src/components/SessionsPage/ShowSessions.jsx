@@ -31,7 +31,7 @@ export default function ShowSessions({ onGroupedSessions, selectedRecordId }) {
       .catch(function (err) {
         console.log(err);
       });
-  }, [currentUser.token]);
+  }, [currentUser]);
 
   useEffect(() => {
     const grouped = groupBy(allSessions, "record_id");

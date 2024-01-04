@@ -51,7 +51,7 @@ export default function FetchWorkouts() {
       .catch(function (err) {
         console.log(err);
       });
-  }, [currentUser.token]);
+  }, [currentUser]);
 
   useEffect(() => {
     axios
@@ -67,7 +67,7 @@ export default function FetchWorkouts() {
       .catch(function (err) {
         console.log(err);
       });
-  }, [currentUser.token]);
+  }, [currentUser]);
 
   const handleDelete = () => {
     setShowModal(false);

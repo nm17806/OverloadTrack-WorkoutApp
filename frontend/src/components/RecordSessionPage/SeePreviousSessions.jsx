@@ -21,7 +21,7 @@ export default function SeePreviousSessions({ openAccordion }) {
       .catch(function (err) {
         console.log(err);
       });
-  }, [currentUser.token]);
+  }, [currentUser]);
 
   const filterExercise = allSessions.filter((session) => session.exercise_id == openAccordion);
 

@@ -42,7 +42,7 @@ export default function FetchExercises() {
     };
 
     fetchExercises();
-  }, [currentUser]); // Include currentUser as a dependency
+  }, [currentUser]);
 
   useEffect(() => {
     // Use lodash to filter the exercises based on the search query

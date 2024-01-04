@@ -3,33 +3,17 @@ import Card from "react-bootstrap/Card";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { AuthContext } from "../../context/AuthContext";
-import { useContext } from "react";
+import { useExercisesContext } from "../Hooks/useExercisesContext";
 
 export default function ExerciseCards({ exercise }) {
+  const { deleteExercise } = useExercisesContext();
   const [showModal, setShowModal] = useState(false);
 
-  const { currentUser } = useContext(AuthContext);
-
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setShowModal(false);
-    axios
-      .patch(`api/exercises/${exercise.exercise_id}`, null, {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
-        },
-      })
-      .then(function (res) {
-        // handle success
-        console.log(res);
-      })
-      .catch(function (err) {
-        // handle error
-        console.log(err);
-      });
+    await deleteExercise(exercise.exercise_id);
   };
 
   return (

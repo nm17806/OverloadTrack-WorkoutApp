@@ -2,47 +2,28 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import axios from "axios";
-import { AuthContext } from "../../context/AuthContext";
-import { useContext } from "react";
+import { useExercisesContext } from "../Hooks/useExercisesContext";
 
 export default function AddExerciseForm() {
+  const { postExercise } = useExercisesContext();
   const [exercise, setExercise] = useState("");
   const [bodyPart, setBodyPart] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { currentUser } = useContext(AuthContext);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    try {
+      await postExercise(exercise, bodyPart);
+      setExercise("");
+      setBodyPart("");
 
-    axios
-      .post(
-        "api/exercises",
-        {
-          exercise_name: exercise,
-          body_part: bodyPart,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${currentUser.token}`,
-          },
-        }
-      )
-      .then(function (res) {
-        setExercise("");
-        setBodyPart("");
-        console.log(res);
-      })
-      .catch(function (err) {
-        setError(err);
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      setIsLoading(false);
+    } catch (err) {
+      setError(err);
+      console.log(err);
+    }
   };
 
   return (

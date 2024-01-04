@@ -1,16 +1,15 @@
 import ExerciseCards from "./ExerciseCards";
 import Row from "react-bootstrap/Row";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import _ from "lodash";
 import React from "react";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
-import { AuthContext } from "../../context/AuthContext";
-import { useContext } from "react";
+import { useExercisesContext } from "../Hooks/useExercisesContext";
 
 export default function FetchExercises() {
-  const [exercises, setExercises] = useState([]);
+  const { fetchExercises, exercises } = useExercisesContext();
+
   const [filteredExercises, setFilteredExercises] = useState(exercises);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -19,30 +18,16 @@ export default function FetchExercises() {
     setSearchQuery(query);
   };
 
-  const { currentUser } = useContext(AuthContext);
-
   useEffect(() => {
-    const fetchExercises = () => {
+    const grabExercises = async () => {
       try {
-        axios
-          .get("api/exercises", {
-            headers: {
-              Authorization: `Bearer ${currentUser.token}`,
-            },
-          })
-          .then((res) => {
-            setExercises(res.data);
-          })
-          .catch((error) => {
-            console.error("Error fetching exercises:", error);
-          });
-      } catch (error) {
-        console.error("Error fetching exercises:", error);
+        await fetchExercises();
+      } catch (err) {
+        console.log(err);
       }
     };
-
-    fetchExercises();
-  }, [currentUser]);
+    grabExercises();
+  }, [fetchExercises]);
 
   useEffect(() => {
     // Use lodash to filter the exercises based on the search query
@@ -56,8 +41,6 @@ export default function FetchExercises() {
     // Update the filteredExercises state
     setFilteredExercises(filtered);
   }, [exercises, searchQuery]);
-
-  console.log(filteredExercises); // Log filtered exercises for debugging
 
   return (
     <React.Fragment>

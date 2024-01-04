@@ -85,6 +85,7 @@ export default function FetchWorkouts() {
         .then(function (res) {
           setSelectedExercise(null);
           console.log(res);
+          window.location.reload();
         })
         .catch(function (err) {
           console.log(err);
@@ -106,6 +107,7 @@ export default function FetchWorkouts() {
         })
         .then(function (res) {
           setSelectedWorkout(null);
+          window.location.reload();
           console.log(res);
         })
         .catch(function (err) {

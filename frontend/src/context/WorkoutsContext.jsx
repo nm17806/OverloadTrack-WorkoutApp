@@ -2,15 +2,17 @@ import { createContext, useReducer } from "react";
 
 export const WorkoutsContext = createContext();
 
-const workoutsReducer = ({ state, action }) => {
+export const workoutsReducer = (state, action) => {
   switch (action.type) {
-    case "FETCH_WORKOUTS":
-      return {
-        workouts: action.payload,
-      };
     case "FETCH_WORKOUT_EXERCISES":
       return {
-        workoutExercises: action.payload,
+        ...state,
+        workouts: action.payload,
+      };
+    case "FETCH_WORKOUTS":
+      return {
+        ...state,
+        workoutName: action.payload,
       };
     case "DELETE_EXERCISE":
       return {
@@ -24,10 +26,11 @@ const workoutsReducer = ({ state, action }) => {
       return state;
   }
 };
+
 export const WorkoutsContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(workoutsReducer, {
     workouts: [],
-    workoutExercises: [],
+    workoutName: [],
   });
-  return <WorkoutsContext.Provider value={{ ...state, dispatch }}>{children}</WorkoutsContext.Provider>;
+  return <WorkoutsContext.Provider value={{ state, dispatch }}>{children}</WorkoutsContext.Provider>;
 };

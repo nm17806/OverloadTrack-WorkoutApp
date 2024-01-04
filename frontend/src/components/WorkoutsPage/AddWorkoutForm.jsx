@@ -33,6 +33,7 @@ export default function AddWorkoutForm() {
         .then(function (res) {
           setWorkout("");
           console.log(res);
+          window.location.reload();
         })
         .catch(function (err) {
           setError(err);

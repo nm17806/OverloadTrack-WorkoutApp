@@ -4,8 +4,15 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import AddExerciseForm from "../components/ExercisesPage/AddExerciseForm";
 import { ExercisesContextProvider } from "../context/ExercisesContext";
+import { useAuthContext } from "../components/Hooks/useAuthContext";
 
 export default function Exercises() {
+  const { currentUser } = useAuthContext();
+  if (!currentUser) {
+    // I can set up a component that will tell them they need to create an account with a link to the login page
+    return;
+  }
+
   return (
     <ExercisesContextProvider>
       <Container>

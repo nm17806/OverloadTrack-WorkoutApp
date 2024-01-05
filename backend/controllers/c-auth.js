@@ -146,7 +146,6 @@ const login = async (req, res) => {
 
     // If email and password are correct, generate a token
     const token = jwt.sign({ id: user[0].user_id }, process.env.SECRET, { expiresIn: "3d" });
-    console.log(token);
 
     // Exclude the password from the response
     const { password: userPassword, ...other } = user[0];

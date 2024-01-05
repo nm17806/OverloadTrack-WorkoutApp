@@ -18,11 +18,11 @@ export default function AddExerciseForm() {
       await postExercise(exercise, bodyPart);
       setExercise("");
       setBodyPart("");
-
       setIsLoading(false);
     } catch (err) {
       setError(err);
       console.log(err);
+      setIsLoading(false);
     }
   };
 

@@ -48,7 +48,7 @@ const createExercise = async (req, res) => {
   VALUES (?,?,?)`,
       [exercise_name, body_part, user_id]
     );
-    res.status(201).send({ id: result.insertId, exercise_name, body_part });
+    res.status(201).send({ exercise_id: result.insertId, exercise_name, body_part, user_id });
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
@@ -58,6 +58,7 @@ const disableExercise = async (req, res) => {
   const id = req.params.exercise_id;
   try {
     const [result] = await pool.query(`UPDATE exercise SET is_active = false WHERE exercise_id = ?`, [id]);
+    console.log(result);
     res.status(200).send({ Deleted_Rows: result.affectedRows });
   } catch (err) {
     res.status(500).send({ error: err.message });

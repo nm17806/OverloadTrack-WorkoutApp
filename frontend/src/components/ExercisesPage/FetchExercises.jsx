@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 import { useExercisesContext } from "../Hooks/useExercisesContext";
 
 export default function FetchExercises() {
-  const { fetchExercises, exercises } = useExercisesContext();
+  const { exercises } = useExercisesContext();
 
   const [filteredExercises, setFilteredExercises] = useState(exercises);
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,17 +17,6 @@ export default function FetchExercises() {
     const query = e.target.value;
     setSearchQuery(query);
   };
-
-  useEffect(() => {
-    const grabExercises = async () => {
-      try {
-        await fetchExercises();
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    grabExercises();
-  }, [fetchExercises]);
 
   useEffect(() => {
     // Use lodash to filter the exercises based on the search query

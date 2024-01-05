@@ -58,7 +58,6 @@ const register = async (req, res) => {
       `,
         [id, id]
       );
-      console.log(newUserExercises);
       const exerciseId = newUserExercises.insertId;
       const workoutsId = newUserWorkouts.insertId;
       const [addExercisesToWorkouts] = await pool.query(

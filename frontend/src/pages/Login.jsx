@@ -6,7 +6,7 @@ import Col from "react-bootstrap/Col";
 import "../index.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../components/Hooks/useAuthContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 export default function Login() {
   const [inputs, setInputs] = useState({ email: "", password: "" });

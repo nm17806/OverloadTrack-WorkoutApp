@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useEffect, useState } from "react";
 import SeePreviousSessions from "../components/RecordSessionPage/SeePreviousSessions";
-import { useAuthContext } from "../components/Hooks/useAuthContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 export default function RecordSession() {
   const [openAccordion, setOpenAccordion] = useState(null);

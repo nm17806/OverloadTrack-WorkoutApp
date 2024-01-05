@@ -2,7 +2,7 @@ import Container from "react-bootstrap/Container";
 import ShowSessions from "../components/SessionsPage/ShowSessions";
 import SessionCalendar from "../components/SessionsPage/SessionCalendar";
 import { useState } from "react";
-import { useAuthContext } from "../components/Hooks/useAuthContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 export default function Sessions() {
   const [groupedSessions, setGroupedSessions] = useState(null);

@@ -101,7 +101,7 @@ const addWorkout = async (req, res) => {
   VALUES (?,?);`,
       [template_name, user_id]
     );
-    res.status(201).send({ id: result.insertId, template_name });
+    res.status(201).send({ template_id: result.insertId, template_name, user_id });
   } catch (err) {
     res.status(500).send({ error: err.message });
   }

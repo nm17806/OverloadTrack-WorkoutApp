@@ -1,22 +1,17 @@
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import "./AddExerciseToWorkout.css";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useWorkoutsContext } from "../../hooks/useWorkoutsContext";
 
 export default function AddExerciseToWorkout() {
-  const [workoutName, setWorkoutName] = useState([]);
+  const { sortedExercises, addExercisesToWorkout, workoutName } = useWorkoutsContext();
   const [selectedWorkout, setSelectedWorkout] = useState("Select a Workout");
   const [selectedWorkoutId, setselectedWorkoutId] = useState([]);
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [sortedExercises, setSortedExercises] = useState([]);
-
-  const { currentUser } = useContext(AuthContext);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -24,20 +19,7 @@ export default function AddExerciseToWorkout() {
 
     if (selectedItems && selectedItems.length > 0 && selectedWorkoutId) {
       // Use map to create an array of promises
-      const postRequests = selectedItems.map((item) =>
-        axios.post(
-          "api/workouts/add-exercise",
-          {
-            template_id: selectedWorkoutId,
-            exercise_id: item,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${currentUser.token}`,
-            },
-          }
-        )
-      );
+      const postRequests = selectedItems.map((item) => addExercisesToWorkout(selectedWorkoutId, item));
 
       // Use Promise.all to wait for all promises to resolve
       Promise.all(postRequests)
@@ -58,23 +40,6 @@ export default function AddExerciseToWorkout() {
     setSelectedWorkout(item);
     setselectedWorkoutId(id);
   };
-
-  useEffect(() => {
-    axios
-      .get("api/workouts", {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
-        },
-      })
-      .then(function (res) {
-        // handle success
-        setWorkoutName(res.data);
-      })
-      .catch(function (err) {
-        // handle error
-        console.log(err);
-      });
-  }, [currentUser]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -101,32 +66,6 @@ export default function AddExerciseToWorkout() {
       setSelectedItems([...selectedItems, value]);
     }
   };
-
-  useEffect(() => {
-    axios
-      .get("api/exercises", {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
-        },
-      })
-      .then(function (res) {
-        const sortExercises = [...res.data].sort((a, b) => {
-          // Compare the 'body_part' values
-          if (a.body_part < b.body_part) {
-            return -1;
-          }
-          if (a.body_part > b.body_part) {
-            return 1;
-          }
-          return 0;
-        });
-        setSortedExercises(sortExercises);
-      })
-      .catch(function (err) {
-        // handle error
-        console.log(err);
-      });
-  }, [currentUser]);
 
   return (
     <div className="addExerciseForm">

@@ -5,7 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { useExercisesContext } from "../Hooks/useExercisesContext";
+import { useExercisesContext } from "../../hooks/useExercisesContext";
 
 export default function ExerciseCards({ exercise }) {
   const { deleteExercise } = useExercisesContext();

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import axios from "axios";
 import Accordion from "react-bootstrap/Accordion";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,12 +9,12 @@ import Button from "react-bootstrap/Button";
 import _ from "lodash";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useWorkoutsContext } from "../../hooks/useWorkoutsContext";
 
 export default function FetchWorkouts() {
-  const [workouts, setWorkouts] = useState([]);
-  const [workoutName, setWorkoutName] = useState([]);
+  // const [workouts, setWorkouts] = useState([]);
+  // const [workoutName, setWorkoutName] = useState([]);
+  const { workouts, workoutName, deleteExercise, deleteWorkout } = useWorkoutsContext();
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showWorkoutModal, setShowWorkoutModal] = useState(false);
@@ -23,7 +22,9 @@ export default function FetchWorkouts() {
   const [filteredWorkouts, setFilteredWorkouts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { currentUser } = useContext(AuthContext);
+  useEffect(() => {
+    setFilteredWorkouts(workoutName);
+  }, [workoutName]);
 
   const handleSearch = (e) => {
     const query = e.target.value;
@@ -38,81 +39,35 @@ export default function FetchWorkouts() {
     setFilteredWorkouts(filtered);
   };
 
-  useEffect(() => {
-    axios
-      .get("api/workouts/exercises", {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
-        },
-      })
-      .then(function (res) {
-        setWorkouts(res.data);
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
-  }, [currentUser]);
-
-  useEffect(() => {
-    axios
-      .get("api/workouts", {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
-        },
-      })
-      .then(function (res) {
-        setWorkoutName(res.data);
-        setFilteredWorkouts(res.data);
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
-  }, [currentUser]);
-
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setShowModal(false);
-
+    console.log(selectedExercise);
     // Use the selectedExercise state to get the correct exercise and workout information
     if (selectedExercise) {
-      const { id } = selectedExercise;
+      try {
+        const { id } = selectedExercise;
+        await deleteExercise(id);
 
-      axios
-        .patch(`api/workouts/exercises/${id}`, null, {
-          headers: {
-            Authorization: `Bearer ${currentUser.token}`,
-          },
-        })
-        .then(function (res) {
-          setSelectedExercise(null);
-          console.log(res);
-          window.location.reload();
-        })
-        .catch(function (err) {
-          console.log(err);
-        });
+        setSelectedExercise(null);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const handleWorkoutDelete = () => {
+  const handleWorkoutDelete = async () => {
     setShowWorkoutModal(false);
 
     if (selectedWorkout) {
-      const { template_id } = selectedWorkout;
+      try {
+        const { template_id } = selectedWorkout;
 
-      axios
-        .patch(`api/workouts/${template_id}`, null, {
-          headers: {
-            Authorization: `Bearer ${currentUser.token}`,
-          },
-        })
-        .then(function (res) {
-          setSelectedWorkout(null);
-          window.location.reload();
-          console.log(res);
-        })
-        .catch(function (err) {
-          console.log(err);
-        });
+        await deleteWorkout(template_id);
+
+        setSelectedWorkout(null);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -123,10 +78,10 @@ export default function FetchWorkouts() {
           <Form.Control value={searchQuery} onChange={handleSearch} type="text" placeholder="eg. Chest" />
         </FloatingLabel>
       </Form>
+
       {filteredWorkouts.map((workout) => {
         const checkForExercises = workouts.find((exercise) => exercise.template_id === workout.template_id);
         const filteredExercises = workouts.filter((exercise) => exercise.template_id === workout.template_id);
-
         return (
           <div key={workout.template_id}>
             <Accordion className="workoutAccordian">

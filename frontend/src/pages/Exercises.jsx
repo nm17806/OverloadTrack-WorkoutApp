@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import AddExerciseForm from "../components/ExercisesPage/AddExerciseForm";
 import { ExercisesContextProvider } from "../context/ExercisesContext";
-import { useAuthContext } from "../components/Hooks/useAuthContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 export default function Exercises() {
   const { currentUser } = useAuthContext();

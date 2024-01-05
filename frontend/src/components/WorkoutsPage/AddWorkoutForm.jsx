@@ -2,46 +2,27 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import axios from "axios";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useWorkoutsContext } from "../../hooks/useWorkoutsContext";
 
 export default function AddWorkoutForm() {
+  const { addWorkout } = useWorkoutsContext();
+
   const [workout, setWorkout] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { currentUser } = useContext(AuthContext);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (workout) {
-      setIsLoading(true);
-      axios
-        .post(
-          "api/workouts",
-          {
-            template_name: workout,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${currentUser.token}`,
-            },
-          }
-        )
-        .then(function (res) {
-          setWorkout("");
-          console.log(res);
-          window.location.reload();
-        })
-        .catch(function (err) {
-          setError(err);
-          console.log(err);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      try {
+        setIsLoading(true);
+        await addWorkout(workout);
+
+        setWorkout("");
+        setIsLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       setError(true);
     }

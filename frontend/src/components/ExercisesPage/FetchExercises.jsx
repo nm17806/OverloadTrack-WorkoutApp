@@ -5,7 +5,7 @@ import _ from "lodash";
 import React from "react";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
-import { useExercisesContext } from "../Hooks/useExercisesContext";
+import { useExercisesContext } from "../../hooks/useExercisesContext";
 
 export default function FetchExercises() {
   const { exercises } = useExercisesContext();

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useState, useEffect } from "react";
-import { useAuthContext } from "../components/Hooks/useAuthContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 export const ExercisesContext = createContext();
 

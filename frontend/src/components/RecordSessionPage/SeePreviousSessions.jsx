@@ -7,7 +7,7 @@ import { AuthContext } from "../../context/AuthContext";
 export default function SeePreviousSessions({ openAccordion }) {
   const [allSessions, setAllSessions] = useState([]);
 
-  // I need to record the useState of which accrodian is open, in RecordSession.jsx and pass it here as a prop.
+  // It currently choose the three most recent sessions based on the record_id
 
   const { currentUser } = useContext(AuthContext);
 
@@ -15,7 +15,6 @@ export default function SeePreviousSessions({ openAccordion }) {
     axios
       .get("api/sessions", { headers: { Authorization: `Bearer ${currentUser.token}` } })
       .then(function (res) {
-        console.log(JSON.stringify(res.data[0], null, 2));
         setAllSessions(res.data);
       })
       .catch(function (err) {
@@ -31,24 +30,60 @@ export default function SeePreviousSessions({ openAccordion }) {
     return grouped;
   }, {});
 
+  console.log(groupedSessions[Object.keys(groupedSessions)[Object.keys(groupedSessions).length - 1]]);
+
   return (
     <div>
       {Object.keys(groupedSessions).length > 0 && (
-        <h2>
-          {groupedSessions[Object.keys(groupedSessions)[0]][0].exercise_name}, (
-          {groupedSessions[Object.keys(groupedSessions)[0]][0].body_part})
-        </h2>
-      )}
-      {Object.entries(groupedSessions).map(([recordId, sessions]) => (
-        <div key={recordId}>
-          <h4>{ConvertDate(sessions[0].workout_date)}</h4>
-          {sessions.map((session, index) => (
-            <p key={index}>
-              Weight: {session.weight}, Reps: {session.reps}
-            </p>
+        <>
+          <div>
+            <h2>
+              {groupedSessions[Object.keys(groupedSessions)[Object.keys(groupedSessions).length - 3]][0].exercise_name},
+              ({groupedSessions[Object.keys(groupedSessions)[Object.keys(groupedSessions).length - 3]][0].body_part})
+            </h2>
+            <h4>
+              {ConvertDate(
+                groupedSessions[Object.keys(groupedSessions)[Object.keys(groupedSessions).length - 3]][0].workout_date
+              )}
+            </h4>
+          </div>
+          {groupedSessions[Object.keys(groupedSessions)[Object.keys(groupedSessions).length - 3]].map((sets) => (
+            <div key={sets.set_id}>
+              <p>
+                Weight: {sets.weight}, Reps: {sets.reps}
+              </p>
+            </div>
           ))}
-        </div>
-      ))}
+          <div>
+            <h4>
+              {ConvertDate(
+                groupedSessions[Object.keys(groupedSessions)[Object.keys(groupedSessions).length - 2]][0].workout_date
+              )}
+            </h4>
+          </div>
+          {groupedSessions[Object.keys(groupedSessions)[Object.keys(groupedSessions).length - 2]].map((sets) => (
+            <div key={sets.set_id}>
+              <p>
+                Weight: {sets.weight}, Reps: {sets.reps}
+              </p>
+            </div>
+          ))}
+          <div>
+            <h4>
+              {ConvertDate(
+                groupedSessions[Object.keys(groupedSessions)[Object.keys(groupedSessions).length - 1]][0].workout_date
+              )}
+            </h4>
+          </div>
+          {groupedSessions[Object.keys(groupedSessions)[Object.keys(groupedSessions).length - 1]].map((sets) => (
+            <div key={sets.set_id}>
+              <p>
+                Weight: {sets.weight}, Reps: {sets.reps}
+              </p>
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 }

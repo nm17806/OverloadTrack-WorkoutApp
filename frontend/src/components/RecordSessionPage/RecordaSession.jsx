@@ -147,7 +147,6 @@ export default function RecordaSession({ openAccordion, setOpenAccordion }) {
 
   const handleAccordionClick = (eventKey) => {
     setOpenAccordion(openAccordion === eventKey ? null : eventKey);
-    console.log(openAccordion);
   };
 
   return (

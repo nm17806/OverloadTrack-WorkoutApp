@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Workouts from "./pages/Workouts";
 import RecordSession from "./pages/RecordSession";
+import Statistics from "./pages/Statistics";
 
 const Layout = () => {
   return (
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "/record-session",
         element: <RecordSession />,
+      },
+      {
+        path: "/statistics",
+        element: <Statistics />,
       },
     ],
   },

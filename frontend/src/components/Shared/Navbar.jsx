@@ -1,7 +1,7 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { AuthContext } from "../../context/authContext";
+import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 
 export default function MyNav() {
@@ -18,8 +18,9 @@ export default function MyNav() {
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/exercises">Exercises</Nav.Link>
             <Nav.Link href="/workouts">Workout Routines</Nav.Link>
-            <Nav.Link href="/sessions">See My Sessions</Nav.Link>
+            <Nav.Link href="/sessions">Sessions</Nav.Link>
             <Nav.Link href="/record-session">Record a Workout</Nav.Link>
+            <Nav.Link href="/statistics">Statistics</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">

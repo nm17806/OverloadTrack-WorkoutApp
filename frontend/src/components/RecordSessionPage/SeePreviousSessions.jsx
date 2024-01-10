@@ -15,6 +15,7 @@ export default function SeePreviousSessions({ openAccordion }) {
     axios
       .get("api/sessions", { headers: { Authorization: `Bearer ${currentUser.token}` } })
       .then(function (res) {
+        console.log(res.data);
         setAllSessions(res.data);
       })
       .catch(function (err) {
